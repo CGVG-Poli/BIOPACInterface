@@ -16,7 +16,7 @@ public class BIOPACClient : Singleton<BIOPACClient>
     }
     
     private string _ipAddress = "127.0.0.1";
-    private int _port = 55555;
+    private int _port = 8088;
     private Status _connectionStatus;
 
     private TcpClient _client;
@@ -99,6 +99,12 @@ public class BIOPACClient : Singleton<BIOPACClient>
     //TODO And add the received messages in the screen output
     private void ReceiveCallback(IAsyncResult res)
     {
+        if (_client == null )
+            return;
+
+        if (_client.GetStream() == null)
+            return;
+
         try
         {
             var stream = _client.GetStream();
@@ -108,14 +114,13 @@ public class BIOPACClient : Singleton<BIOPACClient>
                 byte[] incomingData = new byte[byteLength];
                 Array.Copy(_receivedBytes, incomingData, byteLength);
 
-                //Handling data here
-                // string str = BIOPACEncoder.DecodeBIOPACString(incomingData, byteLength);
-                // consoleOutput += "TCP Segment Received! Logging...";
-                // LogManager.Instance.WriteLine(str /*+ "\n"*/);
+                string msg = System.Text.Encoding.UTF8.GetString(incomingData, 0, byteLength);
+                ThreadManager.ExecuteOnMainThread(() => BIOPACMessageHandler.Instance.MessageReceived(msg));             
 
-                //stream.BeginRead(receivedBytes, 0, dataBufferSize, ReceiveCallback, null);
+                stream.BeginRead(_receivedBytes, 0, _dataBufferSize, ReceiveCallback, null);
             }
             else {
+                ConsoleDebugger.Instance.Log($"Received 0 bytes from server");
                 //Disconnect();
                 return;
             }
@@ -123,7 +128,7 @@ public class BIOPACClient : Singleton<BIOPACClient>
         }
         catch (Exception ex)
         {
-            Debug.LogError($"Client-side error receiving data: {ex}");
+            ConsoleDebugger.Instance.Log($"Client-side error receiving data: {ex}");
         }
     }
 
@@ -133,6 +138,18 @@ public class BIOPACClient : Singleton<BIOPACClient>
         {
             Debug.LogWarning("Trying to disconnect but client was never initialized");
             return;
+        }
+
+        if(_client.GetStream() != null)
+        {
+            try
+            {
+                _client.GetStream().Close();
+            }
+            catch (Exception e)
+            {
+                ConsoleDebugger.Instance.Log("EXEPTION: " + e.Message);
+            }
         }
 
         try
