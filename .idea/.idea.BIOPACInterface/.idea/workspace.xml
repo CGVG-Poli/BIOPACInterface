@@ -11,6 +11,7 @@
     <setting file="file://$PROJECT_DIR$/Assets/Runtime/Utils/Singleton.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Assets/Runtime/BIOPACClientUI.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Assets/Runtime/ConsoleDebugger.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Assets/Runtime/BIOPACEncoder.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Assets/Runtime/BIOPACClient.cs" root0="FORCE_HIGHLIGHTING" />
   </component>
   <component name="ProjectId" id="21JnMmJabxGOdOQe3hYvKMeJzoJ" />
@@ -23,6 +24,7 @@
     <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
     <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
     <property name="WebServerToolWindowFactoryState" value="false" />
+    <property name="settings.editor.selected.configurable" value="preferences.keymap" />
   </component>
   <component name="RunManager" selected="Attach to Unity Editor.Attach to Unity Editor">
     <configuration name="Attach to Unity Editor &amp; Play" type="UNITY_DEBUG_RUN_CONFIGURATION" factoryName="UNITY_ATTACH_AND_PLAY" show_console_on_std_err="false" show_console_on_std_out="false" port="50000" address="localhost">
@@ -55,6 +57,8 @@
       <option name="presentableId" value="Default" />
       <updated>1637668015417</updated>
       <workItem from="1637668027444" duration="10538000" />
+      <workItem from="1637743260685" duration="2541000" />
+      <workItem from="1637764858079" duration="3556000" />
     </task>
     <servers />
   </component>

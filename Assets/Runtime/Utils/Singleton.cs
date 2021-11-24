@@ -20,6 +20,7 @@ public class Singleton<T> : MonoBehaviour where T : Component
                     _instance = go.AddComponent<T>();
                 }
             }
+
             return _instance;
         }
     }
@@ -29,5 +30,3 @@ public class Singleton<T> : MonoBehaviour where T : Component
         _instance = this as T;
     }
 }
-
-
