@@ -1,8 +1,11 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Collections.Concurrent;
 using UnityEngine;
 using System.IO;
+using System.Threading;
+using UnityEngine.UI;
 
 
 //Example of Slideshow start
@@ -22,95 +25,141 @@ public class Slideshow
 
 public class BIOPACMessageHandler : Singleton<BIOPACMessageHandler>
 {
+
+    //DEBUG
+    public Text messageReceived;
+    public Text messageToProcess;
+
     public event Action<Slideshow> SlideshowStarted;
     public event Action<Slideshow> SlideshowStopped;
     
     private string _outputDumpFilePath = "C:\\Users\\puniTO\\BIOPAC\\BIOPACOutputs\\biopacOutputDump.txt";
+    private string _outputSlideShowFilePath = "C:\\Users\\puniTO\\BIOPAC\\BIOPACOutputs\\biopacOutputSlideshow.txt";
+    private string _debugOutputFilePath = "C:\\Users\\puniTO\\BIOPAC\\BIOPACOutputs\\debugOutput.txt";
 
-    private Queue<string> _receivedMessages;
+    //private Queue<string> _receivedMessages;
+    private BlockingCollection<string> _receivedMessages;
     private Slideshow _currentSlideshow;
+
+    private int _messagesReceived = 0;
     private void Start()
     {
-        if (!File.Exists(_outputDumpFilePath))
-        {
-            File.WriteAllText(_outputDumpFilePath, "Starting a new BIOPAC Connection", System.Text.Encoding.UTF8);
-            return;
-        }
-
-        _receivedMessages = new Queue<string>();
+        File.WriteAllText(_outputDumpFilePath, "Starting a new BIOPAC Connection\n", System.Text.Encoding.UTF8);
+        File.WriteAllText(_debugOutputFilePath, "Starting a new BIOPAC Connection\n", System.Text.Encoding.UTF8);
+        
+        _receivedMessages = new BlockingCollection<string>();
+        Thread processMessageThread = new Thread(ProcessIncomingMessages);
+        processMessageThread.Start();
     }
 
     private void Update()
     {
-        if(_receivedMessages.Count == 0)
-            return;
+        //messageReceived.text = _messagesReceived.ToString();
+        //messageToProcess.text = _receivedMessages.Count.ToString();
 
-        string msg = _receivedMessages.Dequeue();
-        Slideshow slideshow;
-        bool isSlideshowEvent = false;
-        
-        if (_currentSlideshow == null)
+        if (Input.GetKeyDown(KeyCode.P))
         {
+            Thread processMessageThread = new Thread(ProcessIncomingMessages);
+            processMessageThread.Start();
+        }
+           
+    }
+
+    private void OnGUI()
+    {
+        GUI.Label(new Rect(Screen.width - 150, 15, 150, 20), "RECEIVED:" + _messagesReceived.ToString());
+        GUI.Label(new Rect(Screen.width - 150, 15 + 20, 150, 20), "TO PROCESS:" + _receivedMessages.Count.ToString());
+    }
+
+    private void ProcessIncomingMessages()
+    {
+        while (true)
+        {
+            if (_receivedMessages.Count == 0)
+                continue;
+
+            string msg = _receivedMessages.Take();
+            Slideshow slideshow;
+            bool isSlideshowEvent = false;
+
+            if (_currentSlideshow == null)
+            {
+                isSlideshowEvent = IsSlideshowEvent(msg, out slideshow);
+
+                if (isSlideshowEvent && slideshow.Start)
+                {
+                    //Start logging to file
+                    _currentSlideshow = slideshow;
+                    File.WriteAllText(_outputSlideShowFilePath, msg);
+                    ThreadManager.ExecuteOnMainThread(() => ConsoleDebugger.Instance.Log($"Slideshow Started. Analysis:{_currentSlideshow.AnalysisName}, Respondent:{_currentSlideshow.RespondentName}"));
+                    SlideshowStarted?.Invoke(_currentSlideshow);
+                    continue;
+                }
+
+                continue;
+            }
+
             isSlideshowEvent = IsSlideshowEvent(msg, out slideshow);
 
-            if (isSlideshowEvent && slideshow.Start)
+            if (!isSlideshowEvent)
             {
-                //Start logging to file
-                _currentSlideshow = slideshow;
-                File.WriteAllText(_outputDumpFilePath, msg);
-                ConsoleDebugger.Instance.Log($"Slideshow Started. Analysis:{_currentSlideshow.AnalysisName}, Respondent:{_currentSlideshow.RespondentName}");
-                SlideshowStarted?.Invoke(_currentSlideshow);
-                return;
+                File.AppendAllText(_outputSlideShowFilePath, msg);
+                continue;
             }
-            
-            return;
+
+            if (isSlideshowEvent && !slideshow.Start)
+            {
+
+                ThreadManager.ExecuteOnMainThread(() => ConsoleDebugger.Instance.Log($"Slideshow Stopped. Analysis:{_currentSlideshow.AnalysisName}, Respondent:{_currentSlideshow.RespondentName}"));
+                _currentSlideshow = null;
+                File.AppendAllText(_outputSlideShowFilePath, msg);
+                SlideshowStopped?.Invoke(_currentSlideshow);
+                continue;
+            }
         }
         
-        isSlideshowEvent = IsSlideshowEvent(msg, out slideshow);
-
-        if (!isSlideshowEvent)
-        {
-            File.AppendAllText(_outputDumpFilePath, msg);
-            return;
-        }
-
-        if (isSlideshowEvent && !slideshow.Start)
-        {
-            ConsoleDebugger.Instance.Log($"Slideshow Stopped. Analysis:{_currentSlideshow.AnalysisName}, Respondent:{_currentSlideshow.RespondentName}");
-            _currentSlideshow = null;
-            File.AppendAllText(_outputDumpFilePath, msg);
-            SlideshowStopped?.Invoke(_currentSlideshow);
-            return;
-        }
-
     }
 
     private bool IsSlideshowEvent(string msg, out Slideshow slideshow)
     {
         slideshow = new Slideshow();
         string[] messageParts = msg.Split(';');
-        string slideshowEvent = messageParts[2];
 
-        if (!slideshowEvent.Equals("SlideshowStart") || !slideshowEvent.Equals("SlideshowEnd"))
+        if (messageParts.Length <= 7)
             return false;
-        
-        slideshow.Start = slideshowEvent.Equals("SlideshowStart");
-        slideshow.TimeStamp = messageParts[5];
 
-        if (slideshow.Start)
+        string slideshowEvent = messageParts[2];
+        //File.AppendAllText(_debugOutputFilePath, slideshowEvent + "\n");
+        //ThreadManager.ExecuteOnMainThread(() => Debug.Log());
+        if (slideshowEvent.Equals("SlideshowStart") || slideshowEvent.Equals("SlideshowEnd"))
         {
-            slideshow.RespondentName = messageParts[6];
-            slideshow.AnalysisName = messageParts[9];
+            slideshow.Start = slideshowEvent.Equals("SlideshowStart");
+
+            string text = slideshow.Start ? "Slide show started event" : "Slide show ended event";
+            File.AppendAllText(_debugOutputFilePath, text);
+
+
+            slideshow.TimeStamp = messageParts[5];
+
+            if (slideshow.Start)
+            {
+                slideshow.RespondentName = messageParts[6];
+                slideshow.AnalysisName = messageParts[9];
+            }
+
+            return true;
+
         }
-        
-        return true;
+
+        return false;
     }
 
     public void MessageReceived(string msg)
     {
         string[] messageEntries = msg.Split('\n');
+        _messagesReceived += messageEntries.Length;
         for(int i = 0; i < messageEntries.Length; i++)
-            _receivedMessages.Enqueue(messageEntries[i]);
+            _receivedMessages.Add(messageEntries[i]);
         
         File.AppendAllText(_outputDumpFilePath, msg);
     }

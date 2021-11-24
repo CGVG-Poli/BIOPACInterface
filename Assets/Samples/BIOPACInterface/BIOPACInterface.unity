@@ -655,6 +655,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7c56a72d6aeeb284d81fb50f46a05e8c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  messageReceived: {fileID: 0}
+  messageToProcess: {fileID: 0}
 --- !u!4 &356478984
 Transform:
   m_ObjectHideFlags: 0
