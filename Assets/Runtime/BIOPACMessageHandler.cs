@@ -6,7 +6,7 @@ using UnityEngine;
 using System.IO;
 using System.Threading;
 using UnityEngine.UI;
-
+using System.Globalization;
 
 //Example of Slideshow start
 // 07042905;AttentionTool;SlideshowStart;0;-1;20211124112050433;Francesco_POLI;MALE;32;BIOPACInterface_v2;{"usingBlocks":false,"predefinedStudy":false,"stimuli":[{"id":1000,"file":"C:\\ProgramData\\iMotions\\Lab_NG\\Data\\BIOPACInterface_v2\\Stimuli\\VAS (4).png","type":"Image","format":"none","exposureTimeMs":300000.0,"name":"VAS (4)","locked":false}]}
@@ -16,7 +16,7 @@ using UnityEngine.UI;
 
 public class Slideshow
 {
-    public string TimeStamp;
+    public DateTime Start;
     public string AnalysisName;
     public string RespondentName;
     public bool isRunning;
@@ -24,7 +24,7 @@ public class Slideshow
     public Slideshow(string biopacMessage)
     {
         string[] messageParts = biopacMessage.Split(';');
-        TimeStamp = messageParts[5];
+        Start = DateTime.ParseExact(messageParts[5], "yyyyMMddhhmmssfff", CultureInfo.InvariantCulture);
         RespondentName = messageParts[6];
         AnalysisName = messageParts[9];
         isRunning = true;
@@ -101,6 +101,14 @@ public class BIOPACMessageHandler : Singleton<BIOPACMessageHandler>
                 ThreadManager.ExecuteOnMainThread(() =>
                     ConsoleDebugger.Instance.Log(
                         $"Slideshow Started. Analysis:{_currentSlideshow.AnalysisName}, Respondent:{_currentSlideshow.RespondentName}"));
+
+                //DEBUG
+                TimeSpan desync = DateTime.Now - _currentSlideshow.Start;
+                ThreadManager.ExecuteOnMainThread(() =>
+                    ConsoleDebugger.Instance.Log(
+                        $"Desync between clocks:{desync.ToString("G")}"));
+
+
                 SlideshowStarted?.Invoke(_currentSlideshow);
                 continue;
             }
