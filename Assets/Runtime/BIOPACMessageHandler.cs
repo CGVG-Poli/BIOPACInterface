@@ -19,6 +19,7 @@ public class Slideshow
     public string TimeStamp;
     public string AnalysisName;
     public string RespondentName;
+    public bool isRunning;
 
     public Slideshow(string biopacMessage)
     {
@@ -26,6 +27,7 @@ public class Slideshow
         TimeStamp = messageParts[5];
         RespondentName = messageParts[6];
         AnalysisName = messageParts[9];
+        isRunning = true;
     }
 }
 
@@ -110,11 +112,12 @@ public class BIOPACMessageHandler : Singleton<BIOPACMessageHandler>
                     ConsoleDebugger.Instance.Log(
                         $"Slideshow Stopped. Analysis:{_currentSlideshow.AnalysisName}, Respondent:{_currentSlideshow.RespondentName}"));
                 File.AppendAllText(_outputSlideShowFilePath, msg);
+                _currentSlideshow.isRunning = false;
                 SlideshowStopped?.Invoke(_currentSlideshow);
-                _currentSlideshow = null;
+                
             }
 
-            if (_currentSlideshow != null)
+            if (_currentSlideshow != null && _currentSlideshow.isRunning)
             {
                 File.AppendAllText(_outputSlideShowFilePath, msg);
             }
