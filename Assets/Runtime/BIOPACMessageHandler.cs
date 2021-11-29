@@ -16,10 +16,17 @@ using UnityEngine.UI;
 
 public class Slideshow
 {
-    public bool Start;
     public string TimeStamp;
     public string AnalysisName;
     public string RespondentName;
+
+    public Slideshow(string biopacMessage)
+    {
+        string[] messageParts = biopacMessage.Split(';');
+        TimeStamp = messageParts[5];
+        RespondentName = messageParts[6];
+        AnalysisName = messageParts[9];
+    }
 }
 
 
@@ -79,79 +86,53 @@ public class BIOPACMessageHandler : Singleton<BIOPACMessageHandler>
                 continue;
 
             string msg = _receivedMessages.Take();
-            Slideshow slideshow;
-            bool isSlideshowEvent = false;
 
-            if (_currentSlideshow == null)
+            BIOPACMessages.Type messageType = GetMessageType(msg);
+            if (messageType == BIOPACMessages.Type.Undefined)
+                continue;
+
+            if (messageType == BIOPACMessages.Type.SlideshowStart)
             {
-                isSlideshowEvent = IsSlideshowEvent(msg, out slideshow);
-
-                if (isSlideshowEvent && slideshow.Start)
-                {
-                    //Start logging to file
-                    _currentSlideshow = slideshow;
-                    File.WriteAllText(_outputSlideShowFilePath, msg);
-                    ThreadManager.ExecuteOnMainThread(() => ConsoleDebugger.Instance.Log($"Slideshow Started. Analysis:{_currentSlideshow.AnalysisName}, Respondent:{_currentSlideshow.RespondentName}"));
-                    SlideshowStarted?.Invoke(_currentSlideshow);
-                    continue;
-                }
-
+                //The slideshow started
+                _currentSlideshow = new Slideshow(msg);
+                File.WriteAllText(_outputSlideShowFilePath, msg);
+                ThreadManager.ExecuteOnMainThread(() =>
+                    ConsoleDebugger.Instance.Log(
+                        $"Slideshow Started. Analysis:{_currentSlideshow.AnalysisName}, Respondent:{_currentSlideshow.RespondentName}"));
+                SlideshowStarted?.Invoke(_currentSlideshow);
                 continue;
             }
 
-            isSlideshowEvent = IsSlideshowEvent(msg, out slideshow);
-
-            if (!isSlideshowEvent)
+            if (messageType == BIOPACMessages.Type.SlideshowEnd && _currentSlideshow != null)
             {
-                File.AppendAllText(_outputSlideShowFilePath, msg);
-                continue;
-            }
-
-            if (isSlideshowEvent && !slideshow.Start)
-            {
-
-                ThreadManager.ExecuteOnMainThread(() => ConsoleDebugger.Instance.Log($"Slideshow Stopped. Analysis:{_currentSlideshow.AnalysisName}, Respondent:{_currentSlideshow.RespondentName}"));
-                _currentSlideshow = null;
+                //The slideshow has ended
+                ThreadManager.ExecuteOnMainThread(() =>
+                    ConsoleDebugger.Instance.Log(
+                        $"Slideshow Stopped. Analysis:{_currentSlideshow.AnalysisName}, Respondent:{_currentSlideshow.RespondentName}"));
                 File.AppendAllText(_outputSlideShowFilePath, msg);
                 SlideshowStopped?.Invoke(_currentSlideshow);
-                continue;
+                _currentSlideshow = null;
+            }
+
+            if (_currentSlideshow != null)
+            {
+                File.AppendAllText(_outputSlideShowFilePath, msg);
             }
         }
-        
     }
 
-    private bool IsSlideshowEvent(string msg, out Slideshow slideshow)
+    private BIOPACMessages.Type GetMessageType(string msg)
     {
-        slideshow = new Slideshow();
         string[] messageParts = msg.Split(';');
+        if (messageParts.Length < 2)
+            return BIOPACMessages.Type.Undefined;
 
-        if (messageParts.Length <= 7)
-            return false;
-
-        string slideshowEvent = messageParts[2];
-        //File.AppendAllText(_debugOutputFilePath, slideshowEvent + "\n");
-        //ThreadManager.ExecuteOnMainThread(() => Debug.Log());
-        if (slideshowEvent.Equals("SlideshowStart") || slideshowEvent.Equals("SlideshowEnd"))
-        {
-            slideshow.Start = slideshowEvent.Equals("SlideshowStart");
-
-            string text = slideshow.Start ? "Slide show started event" : "Slide show ended event";
-            File.AppendAllText(_debugOutputFilePath, text);
-
-
-            slideshow.TimeStamp = messageParts[5];
-
-            if (slideshow.Start)
-            {
-                slideshow.RespondentName = messageParts[6];
-                slideshow.AnalysisName = messageParts[9];
-            }
-
-            return true;
-
-        }
-
-        return false;
+        BIOPACMessages.Type result;
+        bool success = Enum.TryParse(messageParts[2], out result);
+        if (success)
+            return result;
+        else
+            return BIOPACMessages.Type.Undefined;
     }
 
     public void MessageReceived(string msg)

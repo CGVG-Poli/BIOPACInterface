@@ -12,6 +12,7 @@
     <setting file="file://$PROJECT_DIR$/Assets/Runtime/BIOPACClientUI.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Assets/Runtime/ConsoleDebugger.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Assets/Runtime/BIOPACEncoder.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Assets/Runtime/BIOPACMessages.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Assets/Runtime/BIOPACClient.cs" root0="FORCE_HIGHLIGHTING" />
   </component>
   <component name="ProjectId" id="21JnMmJabxGOdOQe3hYvKMeJzoJ" />
@@ -58,7 +59,8 @@
       <updated>1637668015417</updated>
       <workItem from="1637668027444" duration="10538000" />
       <workItem from="1637743260685" duration="2541000" />
-      <workItem from="1637764858079" duration="3556000" />
+      <workItem from="1637764858079" duration="4150000" />
+      <workItem from="1638180129473" duration="3521000" />
     </task>
     <servers />
   </component>
