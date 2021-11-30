@@ -2,13 +2,28 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using SimpleFileBrowser;
+using System.IO;
 
-public class FileManager : MonoBehaviour
+public class FileManager : Singleton<FileManager>
 {
-    // Start is called before the first frame update
-    void Start()
+    private string _slideshowsOutputFolder;
+    public string SlideshowsOutputFolder { get { return _slideshowsOutputFolder; }
+        set
+        {
+            _slideshowsOutputFolder = value;
+            BIOPACSessionUI.Instance.SlideshowOutputFolder = _slideshowsOutputFolder;
+        } 
+    }
+
+    protected override void Awake()
     {
-        
+        base.Awake();
+        string lastSavedSlideshowOutputFolder = PlayerPrefs.GetString("LastSlideshowOutputFolder");
+        if (string.IsNullOrEmpty(lastSavedSlideshowOutputFolder))
+            SlideshowsOutputFolder = Path.Combine(Application.dataPath, "SlideshowsOutput");
+        else
+            SlideshowsOutputFolder = lastSavedSlideshowOutputFolder;
+
     }
 
     // Update is called once per frame
@@ -16,10 +31,22 @@ public class FileManager : MonoBehaviour
     {
         if (Input.GetKeyDown(KeyCode.L))
         {
-            FileBrowser.ShowLoadDialog((paths) => { Debug.Log("Selected: " + paths[0]); },
-        						   () => { Debug.Log( "Canceled" ); },
-        						   FileBrowser.PickMode.Folders, false, null, null, "Select Folder", "Select" );
+            FileBrowserSelectSlideshowOutput();
         }
     }
+
+    public void FileBrowserSelectSlideshowOutput()
+    {
+        FileBrowser.ShowLoadDialog((paths) => 
+        {
+            SlideshowsOutputFolder = paths[0];
+            PlayerPrefs.SetString("LastSlideshowOutputFolder", SlideshowsOutputFolder);
+            ConsoleDebugger.Instance.Log($"Selected new Slideshow Output folder {SlideshowsOutputFolder}");
+        },
+        () => { ConsoleDebugger.Instance.Log($"Canceled Slideshow Output folder selection, keeping: {SlideshowsOutputFolder}");},
+        FileBrowser.PickMode.Folders, false, SlideshowsOutputFolder, null, "Select Slideshows Output Folder", "Select");
+    }
+
+
 
 }

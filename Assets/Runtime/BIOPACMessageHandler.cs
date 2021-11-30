@@ -43,7 +43,7 @@ public class BIOPACMessageHandler : Singleton<BIOPACMessageHandler>
     public event Action<Slideshow> SlideshowStopped;
     
     private string _outputDumpFilePath = "C:\\Users\\puniTO\\BIOPAC\\BIOPACOutputs\\biopacOutputDump.txt";
-    private string _outputSlideShowFilePath = "C:\\Users\\puniTO\\BIOPAC\\BIOPACOutputs\\biopacOutputSlideshow.txt";
+    private string _outputSlideShowFilePath;
     private string _debugOutputFilePath = "C:\\Users\\puniTO\\BIOPAC\\BIOPACOutputs\\debugOutput.txt";
 
     //private Queue<string> _receivedMessages;
@@ -55,10 +55,29 @@ public class BIOPACMessageHandler : Singleton<BIOPACMessageHandler>
     {
         File.WriteAllText(_outputDumpFilePath, "Starting a new BIOPAC Connection\n", System.Text.Encoding.UTF8);
         File.WriteAllText(_debugOutputFilePath, "Starting a new BIOPAC Connection\n", System.Text.Encoding.UTF8);
+
+        BIOPACClient.Instance.ConnectionStatusChange += OnBIOPACConnectionStatusChange;
         
         _receivedMessages = new BlockingCollection<string>();
         Thread processMessageThread = new Thread(ProcessIncomingMessages);
         processMessageThread.Start();
+    }
+
+    private void OnBIOPACConnectionStatusChange(BIOPACClient.Status status)
+    {
+        switch (status)
+        {
+            case BIOPACClient.Status.Disconnected:
+                break;
+            case BIOPACClient.Status.Connecting:
+                break;
+            case BIOPACClient.Status.Connected:
+                break;
+            case BIOPACClient.Status.Receving:
+                break;
+            default:
+                throw new ArgumentOutOfRangeException(nameof(status), status, null);
+        }
     }
 
     private void Update()
@@ -97,6 +116,13 @@ public class BIOPACMessageHandler : Singleton<BIOPACMessageHandler>
             {
                 //The slideshow started
                 _currentSlideshow = new Slideshow(msg);
+
+                string slideshowRespondentFolder = Path.Combine(FileManager.Instance.SlideshowsOutputFolder, _currentSlideshow.RespondentName);
+                if (!Directory.Exists(slideshowRespondentFolder))
+                    Directory.CreateDirectory(slideshowRespondentFolder);
+
+                _outputSlideShowFilePath = Path.Combine(slideshowRespondentFolder, _currentSlideshow.RespondentName + "_" + DateTime.Now.ToString("yyyy_MM_dd_hh_mm_ss_fff"));
+
                 File.WriteAllText(_outputSlideShowFilePath, msg);
                 ThreadManager.ExecuteOnMainThread(() =>
                     ConsoleDebugger.Instance.Log(
