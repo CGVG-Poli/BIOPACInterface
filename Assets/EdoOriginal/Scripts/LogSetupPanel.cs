@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.Assertions;
-using SFB;
+//using SFB; //LIBRARY IS NOT COMPILING
 
 public class LogSetupPanel : MonoBehaviour
 {
@@ -38,6 +38,7 @@ public class LogSetupPanel : MonoBehaviour
 
     private void SelectFolderButtonPressed()
     {
+        /* LIBRARY IS NOT COMPILING
         var extensions = new[] {
             new ExtensionFilter("directory", "" ),
         };
@@ -56,5 +57,6 @@ public class LogSetupPanel : MonoBehaviour
         {
             Debug.LogError("ERROR: Invalid folder!");
         }
+        */
     }
 }

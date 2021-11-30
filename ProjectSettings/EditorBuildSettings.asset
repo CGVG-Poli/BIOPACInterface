@@ -4,5 +4,8 @@
 EditorBuildSettings:
   m_ObjectHideFlags: 0
   serializedVersion: 2
-  m_Scenes: []
+  m_Scenes:
+  - enabled: 1
+    path: Assets/Samples/BIOPACInterface/BIOPACInterface.unity
+    guid: 7d3a12374a4ead14d969d20cbc40d3f2
   m_configObjects: {}
