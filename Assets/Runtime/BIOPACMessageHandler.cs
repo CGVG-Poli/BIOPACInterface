@@ -53,6 +53,7 @@ public class BIOPACMessageHandler : Singleton<BIOPACMessageHandler>
     private int _messagesReceived = 0;
     private void Start()
     {
+        return;
         File.WriteAllText(_outputDumpFilePath, "Starting a new BIOPAC Connection\n", System.Text.Encoding.UTF8);
         File.WriteAllText(_debugOutputFilePath, "Starting a new BIOPAC Connection\n", System.Text.Encoding.UTF8);
 
@@ -96,7 +97,7 @@ public class BIOPACMessageHandler : Singleton<BIOPACMessageHandler>
     private void OnGUI()
     {
         GUI.Label(new Rect(Screen.width - 150, 15, 150, 20), "RECEIVED:" + _messagesReceived.ToString());
-        GUI.Label(new Rect(Screen.width - 150, 15 + 20, 150, 20), "TO PROCESS:" + _receivedMessages.Count.ToString());
+        GUI.Label(new Rect(Screen.width - 150, 15 + 20, 150, 20), "TO PROCESS:" + _receivedMessages?.Count.ToString());
     }
 
     private void ProcessIncomingMessages()
