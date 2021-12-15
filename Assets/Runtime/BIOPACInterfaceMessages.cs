@@ -13,6 +13,9 @@ public class ClientServerSyncMessage
 {
     public SimpleTime ClientTime { get; set; }
     public SimpleTime ServerTime { get; set; }
+    
+    public bool ClientTimeSetted { get; set; }
+    public bool ServerTimeSetted { get; set; }
 }
 #endregion
 
@@ -56,6 +59,14 @@ public class SimpleTime : INetSerializable
     {
         return $"{Hours}:{Minutes}:{Seconds},{Milliseconds}";
     }
+    
+    public static TimeSpan operator -(SimpleTime t1, SimpleTime t2)
+    {
+        DateTime time1 = new DateTime(1989, 6, 17, t1.Hours, t1.Minutes, t1.Seconds, t1.Milliseconds);
+        DateTime time2 = new DateTime(1989, 6, 17, t2.Hours, t2.Minutes, t2.Seconds, t2.Milliseconds);
+
+        return (time1 - time2);
+    }  
 }
 
 #endregion

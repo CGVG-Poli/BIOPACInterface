@@ -21,6 +21,9 @@ public class ConsoleDebugger : Singleton<ConsoleDebugger>
     public void Log(string message)
     {
         Debug.Log(message);
+        if(_text == null)
+            return;
+        
         _text.text += message + "\n";
     }
 }

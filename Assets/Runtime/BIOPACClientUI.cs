@@ -16,11 +16,14 @@ public class BIOPACClientUI : Singleton<BIOPACClientUI>
     [SerializeField] private Image _messagesStatusImg;
     [SerializeField] private Text _messagesStatusMessage;
 
-
+    private BIOPACClient _biopacClient;
+    
     private void Start()
     {
+        _biopacClient = BIOPACClient.Instance; 
         RegisterUICallbacks();
-        BIOPACClient.Instance.ConnectionStatusChange += OnConnectionStatusChange;
+        
+        _biopacClient.ConnectionStatusChange += OnConnectionStatusChange;
         OnConnectionStatusChange(BIOPACClient.Status.Disconnected);
 
         _ipIf.text = BIOPACClient.Instance.IPAddress;
@@ -76,7 +79,7 @@ public class BIOPACClientUI : Singleton<BIOPACClientUI>
     private void OnDestroy()
     {
         UnregisterUICallbacks();
-        BIOPACClient.Instance.ConnectionStatusChange -= OnConnectionStatusChange;  
+        _biopacClient.ConnectionStatusChange -= OnConnectionStatusChange;  
 
     }
 
@@ -91,20 +94,20 @@ public class BIOPACClientUI : Singleton<BIOPACClientUI>
 
     private void RegisterUICallbacks()
     {
-        _disconnectBtn.onClick.AddListener(BIOPACClient.Instance.Disconnect);
-        _connectBtn.onClick.AddListener(BIOPACClient.Instance.Connect);
+        _disconnectBtn.onClick.AddListener(_biopacClient.Disconnect);
+        _connectBtn.onClick.AddListener(_biopacClient.Connect);
         
         _ipIf.onEndEdit.AddListener((x =>
         {
             //Verify Correctness of IP Address
-            BIOPACClient.Instance.IPAddress = x;
+            _biopacClient.IPAddress = x;
         }));
         
         _portIf.onEndEdit.AddListener(x =>
         {
             //Verify Correctness of PORT Address
             int port = Int32.Parse(x);
-            BIOPACClient.Instance.Port = port;
+            _biopacClient.Port = port;
         });
     }
 }
