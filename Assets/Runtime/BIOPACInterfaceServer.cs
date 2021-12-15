@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using System.Net;
 using System.Net.Sockets;
 using UnityEngine;
@@ -9,11 +10,14 @@ using LiteNetLib.Utils;
 
 public class BIOPACInterfaceServer : Singleton<BIOPACInterfaceServer>, INetEventListener, INetLogger
 {
+    public event Action<ClientServerSyncMessage, bool> ReceivedClientServerSyncMessage; 
+    
     [SerializeField] private int _connectionPort = 5000; 
     private NetManager _netServer;
     private Dictionary<string, NetPeer> _peers;
     private NetDataWriter _dataWriter;
     private BIOPACInterfaceMessageHandler _messageHandler;
+    private NetPacketProcessor _netPacketProcessor;
 
     public Dictionary<string, NetPeer> Peers => _peers;
 
@@ -48,10 +52,11 @@ public class BIOPACInterfaceServer : Singleton<BIOPACInterfaceServer>, INetEvent
 
         SubscribeToMessages();
     }
-
-    private void SubscribeToMessages()
+    
+    public void SendMessageToClient<T>(T message) where T : BaseMessage, new()
     {
-        _messageHandler.SubscribeToSharedMessages();
+        T messageCasted = message as T;
+        _peers.First().Value.Send(_netPacketProcessor.Write(messageCasted), DeliveryMethod.ReliableOrdered);
     }
 
     public void StartServer()
@@ -67,18 +72,13 @@ public class BIOPACInterfaceServer : Singleton<BIOPACInterfaceServer>, INetEvent
         
         ConsoleDebugger.Instance.Log("Stopped BIOPACInterface Server");
     }
+
+    #region Network Callbacks
+
     public void OnPeerConnected(NetPeer peer)
     {
         ConsoleDebugger.Instance.Log($"BIOPACInterfaceClient connected with ID {peer.Id}");
         _peers[peer.Id.ToString()] = peer;
-
-        ClientServerSyncMessage syncMessage = new ClientServerSyncMessage();
-        syncMessage.ClientTime = null;
-        syncMessage.ServerTime = new SimpleTime(DateTime.Now);
-        syncMessage.ClientTimeSetted = false;
-        syncMessage.ServerTimeSetted = true;
-        
-        peer.Send(_messageHandler.PacketProcessor.Write(syncMessage), DeliveryMethod.ReliableOrdered);
     }
 
     public void OnPeerDisconnected(NetPeer peer, DisconnectInfo disconnectInfo)
@@ -100,7 +100,7 @@ public class BIOPACInterfaceServer : Singleton<BIOPACInterfaceServer>, INetEvent
 
     public void OnNetworkReceive(NetPeer peer, NetPacketReader reader, DeliveryMethod deliveryMethod)
     {
-        _messageHandler.PacketProcessor.ReadAllPackets(reader, peer);
+        _netPacketProcessor.ReadAllPackets(reader, peer);
     }
 
     public void OnNetworkReceiveUnconnected(IPEndPoint remoteEndPoint, NetPacketReader reader, UnconnectedMessageType messageType)
@@ -128,4 +128,23 @@ public class BIOPACInterfaceServer : Singleton<BIOPACInterfaceServer>, INetEvent
     {
         Debug.LogFormat(str, args);
     }
+
+    #endregion
+
+    #region Message Handling
+
+    private void SubscribeToMessages()
+    {
+        //_messageHandler.SubscribeToSharedMessages();
+        _netPacketProcessor = new NetPacketProcessor();
+        _netPacketProcessor.RegisterNestedType<SimpleTime>(() => new SimpleTime()); // We need to pass the constructor when it's not a struct.
+        _netPacketProcessor.SubscribeReusable<ClientServerSyncMessage, NetPeer>(OnClientServerSyncMessage);
+    }
+
+    private void OnClientServerSyncMessage(ClientServerSyncMessage message, NetPeer peer)
+    {
+        ReceivedClientServerSyncMessage?.Invoke(message, true);
+    }
+
+    #endregion
 }

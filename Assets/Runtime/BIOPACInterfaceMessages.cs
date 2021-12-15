@@ -9,13 +9,16 @@ public class BIOPACInterfaceMessages
 }
 
 #region Custom Messages
-public class ClientServerSyncMessage
+
+public class BaseMessage
+{
+    public BaseMessage() {}
+}
+public class ClientServerSyncMessage : BaseMessage
 {
     public SimpleTime ClientTime { get; set; }
+    public SimpleTime ClientTimeSending { get; set; }
     public SimpleTime ServerTime { get; set; }
-    
-    public bool ClientTimeSetted { get; set; }
-    public bool ServerTimeSetted { get; set; }
 }
 #endregion
 
@@ -30,7 +33,10 @@ public class SimpleTime : INetSerializable
 
     public SimpleTime()
     {
-        
+        Hours = 0;
+        Minutes = 0;
+        Seconds = 0;
+        Milliseconds = 0;
     }
     public SimpleTime(DateTime time)
     {

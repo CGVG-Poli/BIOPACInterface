@@ -11,13 +11,16 @@
     <setting file="file://$PROJECT_DIR$/Assets/Runtime/BIOPACInterfaceClient.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Assets/Runtime/Utils/Singleton.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Assets/Runtime/BIOPACInterfaceMessages.cs" root0="FORCE_HIGHLIGHTING" />
-    <setting file="file://$PROJECT_DIR$/Assets/Samples/BIOPACInterface/BIOPACInterfaceDebug.cs" root0="FORCE_HIGHLIGHTING" />
-    <setting file="file://$PROJECT_DIR$/Assets/Runtime/BIOPACClientUI.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Assets/Runtime/ConsoleDebugger.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Assets/Runtime/SyncManager.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Assets/Runtime/BIOPACInterfaceServer.cs" root0="FORCE_HIGHLIGHTING" />
-    <setting file="file://$PROJECT_DIR$/Assets/Runtime/BIOPACEncoder.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Assets/Runtime/BIOPACMessages.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Assets/Runtime/BIOPACClient.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/f98083cbc97e4fa0a4ef2f523feff5e113bc00/4c/9f3f4ce1/Object.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Assets/Runtime/BIOPACInterfaceMessageHandler.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Assets/Runtime/Utils/ExtensionMethods.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Assets/Runtime/BIOPACClientUI.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Assets/Runtime/BIOPACEncoder.cs" root0="FORCE_HIGHLIGHTING" />
   </component>
   <component name="ProjectId" id="21JnMmJabxGOdOQe3hYvKMeJzoJ" />
   <component name="ProjectViewState">
@@ -25,7 +28,7 @@
     <option name="showLibraryContents" value="true" />
   </component>
   <component name="PropertiesComponent">
-    <property name="DebuggerViewTab_PTCS_FirstProportionKey" value="0.34991118" />
+    <property name="DebuggerViewTab_PTCS_FirstProportionKey" value="0.35523978" />
     <property name="DebuggerViewTab_PTCS_LastProportionKey" value="0.0" />
     <property name="Discover.Launch.Via.Unity" value="true" />
     <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
@@ -42,10 +45,10 @@
       <option name="USE_EXTERNAL_CONSOLE" value="0" />
       <method v="2" />
     </configuration>
-    <configuration name="Attach to Unity Editor &amp; Play" type="UNITY_DEBUG_RUN_CONFIGURATION" factoryName="UNITY_ATTACH_AND_PLAY" show_console_on_std_err="false" show_console_on_std_out="false" port="50000" address="localhost" ignored-value-for-modified-check="2204">
+    <configuration name="Attach to Unity Editor &amp; Play" type="UNITY_DEBUG_RUN_CONFIGURATION" factoryName="UNITY_ATTACH_AND_PLAY" show_console_on_std_err="false" show_console_on_std_out="false" port="50000" address="localhost" ignored-value-for-modified-check="27116">
       <option name="allowRunningInParallel" value="false" />
       <option name="listenPortForConnections" value="false" />
-      <option name="pid" value="2204" />
+      <option name="pid" value="27116" />
       <option name="projectPathOnTarget" />
       <option name="selectedOptions">
         <list />
@@ -76,7 +79,9 @@
       <workItem from="1637764858079" duration="4150000" />
       <workItem from="1638180129473" duration="4195000" />
       <workItem from="1638280241906" duration="705000" />
-      <workItem from="1639129122740" duration="10414000" />
+      <workItem from="1639129122740" duration="17127000" />
+      <workItem from="1639501059510" duration="2849000" />
+      <workItem from="1639564851691" duration="17645000" />
     </task>
     <servers />
   </component>
@@ -89,17 +94,17 @@
     <breakpoint-manager>
       <breakpoints>
         <line-breakpoint enabled="true" type="DotNet Breakpoints">
-          <url>file://$PROJECT_DIR$/Assets/Runtime/BIOPACInterfaceServer.cs</url>
-          <line>94</line>
-          <properties documentPath="C:\Users\franc\Documents\Projects\SADAvatars\Unity\BIOPACInterface\Assets\Runtime\BIOPACInterfaceServer.cs" initialLine="93" containingFunctionPresentation="method 'OnNetworkReceive'">
+          <url>file://$PROJECT_DIR$/Assets/Runtime/SyncManager.cs</url>
+          <line>68</line>
+          <properties documentPath="C:\Users\franc\Documents\Projects\SADAvatars\Unity\BIOPACInterface\Assets\Runtime\SyncManager.cs" initialLine="60" containingFunctionPresentation="method 'CalculateDelta'">
             <startOffsets>
-              <option value="2983" />
+              <option value="2925" />
             </startOffsets>
             <endOffsets>
-              <option value="3026" />
+              <option value="2990" />
             </endOffsets>
           </properties>
-          <option name="timeStamp" value="2" />
+          <option name="timeStamp" value="11" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>

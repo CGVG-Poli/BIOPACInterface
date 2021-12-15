@@ -30,10 +30,15 @@ public class MainManager : Singleton<MainManager>
 
         if (Input.GetKeyDown(KeyCode.M))
         {
-            NetPeer peer = BIOPACInterfaceServer.Instance.Peers.First().Value;
-            NetDataWriter writer = new NetDataWriter();                 // Create writer class
-            writer.Put("Hello client!");                                // Put some string
-            peer.Send(writer, DeliveryMethod.ReliableOrdered);
+            SyncManager.Instance.CalculateClientServerSyncTime();
         }
+        
+        if(Input.GetKeyDown(KeyCode.A))
+        {
+            SimpleTime currentTime = new SimpleTime(DateTime.Now);
+            ConsoleDebugger.Instance.Log($"Current time: {currentTime}");
+        }
+
+        ;
     }
 }
