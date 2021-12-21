@@ -7,6 +7,9 @@ using UnityEngine.UI;
 public class ConsoleDebugger : Singleton<ConsoleDebugger>
 {
     [SerializeField] private Text _text;
+    [SerializeField] private Button _showButton;
+    [SerializeField] private Button _clearButton;
+    [SerializeField] private GameObject _consoleContainer;
     
     private void Start()
     {
@@ -16,6 +19,9 @@ public class ConsoleDebugger : Singleton<ConsoleDebugger>
             _text = GetComponentInChildren<Text>();
         }
         _text.text = "";
+        
+        _showButton.onClick.AddListener(() => _consoleContainer.SetActive(!_consoleContainer.activeSelf));
+        _clearButton.onClick.AddListener(() =>_text.text = "");
     }
 
     public void Log(string message)
