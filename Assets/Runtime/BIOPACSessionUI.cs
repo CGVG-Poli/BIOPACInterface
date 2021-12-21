@@ -10,6 +10,7 @@ public class BIOPACSessionUI : Singleton<BIOPACSessionUI>
 {
     [SerializeField] private Text _slideshowFolderText;
     [SerializeField] private Button _selectSlideshowFolder;
+    [SerializeField] private Button _openSlideshowFolder;
 
     private bool _fileBrowserOpen = false;
     
@@ -20,9 +21,14 @@ public class BIOPACSessionUI : Singleton<BIOPACSessionUI>
 
     void Start()
     {
-        //_selectSlideshowFolder.onClick.AddListener(() => FileManager.Instance.FileBrowserSelectSlideshowOutput());
         _selectSlideshowFolder.onClick.AddListener(() => StartCoroutine(OpenFileBrowser()));
         FileManager.Instance.FileBrowserClosed += () =>  _fileBrowserOpen = false;
+        
+        _openSlideshowFolder.onClick.AddListener(() =>
+        {
+            Application.OpenURL($"file://{FileManager.Instance.SlideshowsOutputFolder}");
+        });
+
     }
 
     private IEnumerator OpenFileBrowser()
