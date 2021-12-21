@@ -22,6 +22,7 @@ public class Slideshow
     public string RespondentName;
     public bool isRunning;
 
+    public Slideshow(){}
     public Slideshow(string biopacMessage)
     {
         string[] messageParts = biopacMessage.Split(';');

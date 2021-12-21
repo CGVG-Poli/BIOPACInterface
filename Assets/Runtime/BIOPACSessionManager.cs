@@ -30,6 +30,17 @@ public class BIOPACSessionManager : MonoBehaviour
         };
     }
 
+    private void OnDestroy()
+    {
+        if(_currentSession == null)
+            return;
+        
+        //Otherwise application is quitting but session has not been closed yet
+        Slideshow slideshow = new Slideshow();
+        slideshow.End = DateTime.MinValue;
+        OnSlideshowStopped(slideshow);
+    }
+
     private void OnSlideshowStarted(Slideshow slideshow)
     {
         _currentSession = new BIOPACSession();
@@ -84,6 +95,8 @@ public class BIOPACSessionManager : MonoBehaviour
         sb.Append(_currentSession.ConnectedClientClockDesync).AppendLine();
         
         File.AppendAllText(filePath, sb.ToString());
+
+        _currentSession = null;
     }
     
 }
