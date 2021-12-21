@@ -11,6 +11,7 @@ public class BIOPACSessionUI : Singleton<BIOPACSessionUI>
     [SerializeField] private Text _slideshowFolderText;
     [SerializeField] private Button _selectSlideshowFolder;
     [SerializeField] private Button _openSlideshowFolder;
+    [SerializeField] private Text _sessionStatus;
 
     private bool _fileBrowserOpen = false;
     
@@ -18,6 +19,8 @@ public class BIOPACSessionUI : Singleton<BIOPACSessionUI>
         {
             _slideshowFolderText.text = value;
         } }
+
+    public Text SessionStatus => _sessionStatus;
 
     void Start()
     {

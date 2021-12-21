@@ -19,6 +19,10 @@ public class SyncManager : Singleton<SyncManager>
     private int _cyclesToComplete;
     private List<double> _calculatedDelays;
 
+    private double _lastComputedDelta = 0;
+
+    public double LastComputedDelta => _lastComputedDelta;
+
     void Start()
     {
         BIOPACInterfaceClient.Instance.ReceivedClientServerSyncMessage += OnReceivedClientServerSyncMessage;

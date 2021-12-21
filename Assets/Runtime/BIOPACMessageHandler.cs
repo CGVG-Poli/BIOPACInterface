@@ -17,6 +17,7 @@ using System.Globalization;
 public class Slideshow
 {
     public DateTime Start;
+    public DateTime End;
     public string AnalysisName;
     public string RespondentName;
     public bool isRunning;
@@ -28,6 +29,12 @@ public class Slideshow
         RespondentName = messageParts[6];
         AnalysisName = messageParts[9];
         isRunning = true;
+    }
+
+    public void SetSlideshowEndFromMessage(string message)
+    {
+        string[] messageParts = message.Split(';');
+        End = DateTime.ParseExact(messageParts[5], "yyyyMMddhhmmssfff", CultureInfo.InvariantCulture);
     }
 }
 
@@ -118,7 +125,7 @@ public class BIOPACMessageHandler : Singleton<BIOPACMessageHandler>
                 //The slideshow started
                 _currentSlideshow = new Slideshow(msg);
 
-                string slideshowRespondentFolder = Path.Combine(FileManager.Instance.SlideshowsOutputFolder, _currentSlideshow.RespondentName);
+                string slideshowRespondentFolder = Path.Combine(FileManager.Instance.SlideshowsOutputFolder, _currentSlideshow.AnalysisName, _currentSlideshow.RespondentName);
                 if (!Directory.Exists(slideshowRespondentFolder))
                     Directory.CreateDirectory(slideshowRespondentFolder);
 
@@ -148,6 +155,7 @@ public class BIOPACMessageHandler : Singleton<BIOPACMessageHandler>
                         $"Slideshow Stopped. Analysis:{_currentSlideshow.AnalysisName}, Respondent:{_currentSlideshow.RespondentName}"));
                 File.AppendAllText(_outputSlideShowFilePath, msg);
                 _currentSlideshow.isRunning = false;
+                _currentSlideshow.SetSlideshowEndFromMessage(msg);
                 SlideshowStopped?.Invoke(_currentSlideshow);
                 
             }
