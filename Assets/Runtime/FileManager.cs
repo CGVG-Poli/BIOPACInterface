@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -6,6 +7,8 @@ using System.IO;
 
 public class FileManager : Singleton<FileManager>
 {
+    public event Action FileBrowserClosed;
+    
     private string _slideshowsOutputFolder;
     public string SlideshowsOutputFolder { get { return _slideshowsOutputFolder; }
         set
@@ -42,8 +45,13 @@ public class FileManager : Singleton<FileManager>
             SlideshowsOutputFolder = paths[0];
             PlayerPrefs.SetString("LastSlideshowOutputFolder", SlideshowsOutputFolder);
             ConsoleDebugger.Instance.Log($"Selected new Slideshow Output folder {SlideshowsOutputFolder}");
+            FileBrowserClosed?.Invoke();
         },
-        () => { ConsoleDebugger.Instance.Log($"Canceled Slideshow Output folder selection, keeping: {SlideshowsOutputFolder}");},
+            () =>
+            {
+                ConsoleDebugger.Instance.Log($"Canceled Slideshow Output folder selection, keeping: {SlideshowsOutputFolder}");
+                FileBrowserClosed?.Invoke();
+            },
         FileBrowser.PickMode.Folders, false, SlideshowsOutputFolder, null, "Select Slideshows Output Folder", "Select");
     }
 
