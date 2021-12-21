@@ -14,6 +14,13 @@ public class BaseMessage
 {
     public BaseMessage() {}
 }
+
+public class ClientInformationMessage : BaseMessage
+{
+    public string ClientDeviceName { get; set; }
+    public string ClientUniqueIdentifier { get; set; }
+}
+
 public class ClientServerSyncMessage : BaseMessage
 {
     public SimpleTime ClientTime { get; set; }

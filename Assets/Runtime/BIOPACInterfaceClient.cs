@@ -77,6 +77,11 @@ public class BIOPACInterfaceClient : Singleton<BIOPACInterfaceClient>, INetEvent
     {
         ConsoleDebugger.Instance.Log("[CLIENT] Connected to server");
         _serverPeer = peer;
+
+        ClientInformationMessage message = new ClientInformationMessage();
+        message.ClientDeviceName = SystemInfo.deviceName;
+        message.ClientUniqueIdentifier = SystemInfo.deviceUniqueIdentifier;
+        SendMessageToServer<ClientInformationMessage>(message);
     }
 
     public void OnPeerDisconnected(NetPeer peer, DisconnectInfo disconnectInfo)

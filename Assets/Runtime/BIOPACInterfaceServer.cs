@@ -11,6 +11,10 @@ using LiteNetLib.Utils;
 public class BIOPACInterfaceServer : Singleton<BIOPACInterfaceServer>, INetEventListener, INetLogger
 {
     public event Action<ClientServerSyncMessage, bool> ReceivedClientServerSyncMessage; 
+    public event Action ServerStarted; 
+    public event Action ServerStopped; 
+    public event Action<ClientInformationMessage> ClientConnected; 
+    public event Action ClientDisconnected; 
     
     [SerializeField] private int _connectionPort = 5000; 
     private NetManager _netServer;
@@ -20,6 +24,8 @@ public class BIOPACInterfaceServer : Singleton<BIOPACInterfaceServer>, INetEvent
     private NetPacketProcessor _netPacketProcessor;
 
     public Dictionary<string, NetPeer> Peers => _peers;
+
+    public int DefaultConnectionPort => _connectionPort;
 
     void Start()
     {
@@ -51,6 +57,7 @@ public class BIOPACInterfaceServer : Singleton<BIOPACInterfaceServer>, INetEvent
         _netServer.UpdateTime = 15;
 
         SubscribeToMessages();
+        ServerStarted?.Invoke();
     }
     
     public void SendMessageToClient<T>(T message) where T : BaseMessage, new()
@@ -70,6 +77,7 @@ public class BIOPACInterfaceServer : Singleton<BIOPACInterfaceServer>, INetEvent
         if (_netServer != null)
             _netServer.Stop();
         
+        ServerStopped?.Invoke();
         ConsoleDebugger.Instance.Log("Stopped BIOPACInterface Server");
     }
 
@@ -89,7 +97,9 @@ public class BIOPACInterfaceServer : Singleton<BIOPACInterfaceServer>, INetEvent
             ConsoleDebugger.Instance.Log($"Peer with ID {peer.Id} was not present in previous connections");
             return;
         }
-            
+        
+        //TODO here we are managing a single client it should be more clean and delegated to the NetManager
+        ClientDisconnected?.Invoke();
         _peers.Remove(peer.Id.ToString());
     }
 
@@ -139,6 +149,12 @@ public class BIOPACInterfaceServer : Singleton<BIOPACInterfaceServer>, INetEvent
         _netPacketProcessor = new NetPacketProcessor();
         _netPacketProcessor.RegisterNestedType<SimpleTime>(() => new SimpleTime()); // We need to pass the constructor when it's not a struct.
         _netPacketProcessor.SubscribeReusable<ClientServerSyncMessage, NetPeer>(OnClientServerSyncMessage);
+        _netPacketProcessor.SubscribeReusable<ClientInformationMessage, NetPeer>(OnReceiveClientInformation);
+    }
+
+    private void OnReceiveClientInformation(ClientInformationMessage message, NetPeer peer)
+    {
+        ClientConnected?.Invoke(message);
     }
 
     private void OnClientServerSyncMessage(ClientServerSyncMessage message, NetPeer peer)
