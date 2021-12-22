@@ -64,7 +64,7 @@ public class ConnectedClient
         public void Disconnect()
         {
             unityServer.WriteToConsole("Client with ID # " + ID + " disconnected, cleaning up client slot...");
-            ThreadManager.ExecuteOnMainThread(() => unityServer.UpdateClientName(ID, ""));
+            ThreadManager.Instance.ExecuteOnMainThread(() => unityServer.UpdateClientName(ID, ""));
             socket.Close();
             this.socket = null;
 

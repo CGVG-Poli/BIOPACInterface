@@ -15,7 +15,7 @@ public class MainManager : Singleton<MainManager>
     }
     void Update()
     {
-        ThreadManager.UpdateMain();
+        //ThreadManager.UpdateMain();
         
         //DEBUG FUNCTIONS
         if (Input.GetKeyDown(KeyCode.C))

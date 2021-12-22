@@ -115,7 +115,7 @@ public class BIOPACClient : Singleton<BIOPACClient>
                 Array.Copy(_receivedBytes, incomingData, byteLength);
 
                 string msg = System.Text.Encoding.UTF8.GetString(incomingData, 0, byteLength);
-                ThreadManager.ExecuteOnMainThread(() => BIOPACMessageHandler.Instance.MessageReceived(msg));             
+                ThreadManager.Instance.ExecuteOnMainThread(() => BIOPACMessageHandler.Instance.MessageReceived(msg));             
 
                 stream.BeginRead(_receivedBytes, 0, _dataBufferSize, ReceiveCallback, null);
             }
