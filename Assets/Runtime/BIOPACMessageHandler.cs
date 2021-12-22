@@ -97,6 +97,7 @@ public class BIOPACMessageHandler : Singleton<BIOPACMessageHandler>
             case BIOPACClient.Status.Connecting:
                 break;
             case BIOPACClient.Status.Connected:
+
                 break;
             case BIOPACClient.Status.Receving:
                 break;
@@ -107,12 +108,7 @@ public class BIOPACMessageHandler : Singleton<BIOPACMessageHandler>
 
     private void Update()
     {
-        if (Input.GetKeyDown(KeyCode.P))
-        {
-            Thread processMessageThread = new Thread(ProcessIncomingMessages);
-            processMessageThread.Start();
-        }
-           
+                 
     }
 
     private void OnGUI()
@@ -143,7 +139,7 @@ public class BIOPACMessageHandler : Singleton<BIOPACMessageHandler>
                 if (!Directory.Exists(slideshowRespondentFolder))
                     Directory.CreateDirectory(slideshowRespondentFolder);
 
-                _outputSlideShowFilePath = Path.Combine(slideshowRespondentFolder, _currentSlideshow.RespondentName + "_" + DateTime.Now.ToString("yyyy_MM_dd_hh_mm_ss_fff"));
+                _outputSlideShowFilePath = Path.Combine(slideshowRespondentFolder, _currentSlideshow.RespondentName + "_" + DateTime.Now.ToString("yyyy_MM_dd_hh_mm_ss_fff") + ".csv");
 
                 File.WriteAllText(_outputSlideShowFilePath, msg);
                 ThreadManager.Instance.ExecuteOnMainThread(() =>
