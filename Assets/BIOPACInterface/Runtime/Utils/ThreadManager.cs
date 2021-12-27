@@ -1,16 +1,19 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
-
-public class ThreadManager 
+using System.Threading;
+using Unity;
+public class ThreadManager : Singleton<ThreadManager>
 {
     private static readonly List<Action> executeOnMainThread = new List<Action>();
     private static readonly List<Action> executeCopiedOnMainThread = new List<Action>();
     private static bool actionToExecuteOnMainThread = false;
 
+    private Thread _mainThreadObject;
+
     /// <summary>Sets an action to be executed on the main thread.</summary>
     /// <param name="_action">The action to be executed on the main thread.</param>
-    public static void ExecuteOnMainThread(Action _action)
+    public void ExecuteOnMainThread(Action _action)
     {
         if (_action == null)
         {
@@ -25,8 +28,18 @@ public class ThreadManager
         }
     }
 
+    public bool IsMainThread()
+    {
+        return object.ReferenceEquals(System.Threading.Thread.CurrentThread, _mainThreadObject);
+    }
+
+    private void Start()
+    {
+        _mainThreadObject = Thread.CurrentThread;
+    }
+
     /// <summary>Executes all code meant to run on the main thread. NOTE: Call this ONLY from the main thread.</summary>
-    public static void UpdateMain()
+    private void Update()
     {
         if (actionToExecuteOnMainThread)
         {

@@ -61,9 +61,11 @@ public class SyncManager : Singleton<SyncManager>
             return;
         
         double finalDelta = CalculateDelta();
+
         TimeSpan ts = TimeSpan.FromMilliseconds(finalDelta);
         ConsoleDebugger.Instance.Log($"Final clock sync delta:{finalDelta} ms -> {ts}");
-        
+
+        _lastComputedDelta = finalDelta;
         _syncCoroutine = null;
         ClocksDesyncComputed?.Invoke(finalDelta);
     }

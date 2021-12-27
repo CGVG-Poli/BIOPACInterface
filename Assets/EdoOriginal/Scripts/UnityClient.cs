@@ -109,7 +109,7 @@ public class UnityClient : MonoBehaviour
             
         }
 
-        ThreadManager.UpdateMain();
+        //ThreadManager.UpdateMain();
     }
 
     public void SetMessageParsing(bool parseMessages)

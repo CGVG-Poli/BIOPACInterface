@@ -75,7 +75,9 @@ public class BIOPACSessionManager : MonoBehaviour
         sb.Append(_currentSession.SlideshowEnd.ToString("yyyy/M/d HH:mm:ss.fff")).AppendLine();
         sb.Append(_currentSession.ConnectedClient).AppendLine();
         sb.Append(_currentSession.ConnectedClientClockDesync).AppendLine();
-        BIOPACSessionUI.Instance.SessionStatus.text = sb.ToString();
+
+        if(BIOPACSessionUI.Instance != null)
+            BIOPACSessionUI.Instance.SessionStatus.text = sb.ToString();
         
         
         //WRITE INFORMATIONS TO FILE
@@ -83,7 +85,7 @@ public class BIOPACSessionManager : MonoBehaviour
         string filePath = Path.Combine(FileManager.Instance.SlideshowsOutputFolder, "biopac_sessions_summary.csv");
 
         if(!File.Exists(filePath))
-            File.WriteAllText(filePath, "AnalysisName;RespondentName;RecordingSessionStart;SlideshowStart;SlideshowEnd;ConnectedClient;ConnectedClientClockDesync");
+            File.WriteAllText(filePath, "AnalysisName;RespondentName;RecordingSessionStart;SlideshowStart;SlideshowEnd;ConnectedClient;ConnectedClientClockDesync\n");
         
         sb = new StringBuilder();
         sb.Append(_currentSession.AnalysisName).Append(";");

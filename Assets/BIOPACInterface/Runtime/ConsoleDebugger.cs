@@ -10,9 +10,11 @@ public class ConsoleDebugger : Singleton<ConsoleDebugger>
     [SerializeField] private Button _showButton;
     [SerializeField] private Button _clearButton;
     [SerializeField] private GameObject _consoleContainer;
+
     
     private void Start()
     {
+
         if (_text == null)
         {
             Debug.LogWarning($"Missing Text component in ConsoleDebugger, finding one in childrens");
@@ -26,8 +28,10 @@ public class ConsoleDebugger : Singleton<ConsoleDebugger>
 
     public void Log(string message)
     {
+       
         Debug.Log(message);
-        if(_text == null)
+        
+        if (_text == null)
             return;
         
         _text.text += message + "\n";

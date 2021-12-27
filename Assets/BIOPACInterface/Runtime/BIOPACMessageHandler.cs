@@ -26,7 +26,16 @@ public class Slideshow
     public Slideshow(string biopacMessage)
     {
         string[] messageParts = biopacMessage.Split(';');
-        Start = DateTime.ParseExact(messageParts[5], "yyyyMMddhhmmssfff", CultureInfo.InvariantCulture);
+        try
+        {
+            Start = DateTime.ParseExact(messageParts[5], "yyyyMMddhhmmssfff", CultureInfo.InvariantCulture);
+        }
+        catch(Exception e)
+        {
+            Start = DateTime.MinValue;
+            ThreadManager.Instance.ExecuteOnMainThread( () => ConsoleDebugger.Instance.Log(e.Message)); 
+        }
+
         RespondentName = messageParts[6];
         AnalysisName = messageParts[9];
         isRunning = true;
@@ -35,7 +44,15 @@ public class Slideshow
     public void SetSlideshowEndFromMessage(string message)
     {
         string[] messageParts = message.Split(';');
-        End = DateTime.ParseExact(messageParts[5], "yyyyMMddhhmmssfff", CultureInfo.InvariantCulture);
+        try
+        {
+            End = DateTime.ParseExact(messageParts[5], "yyyyMMddhhmmssfff", CultureInfo.InvariantCulture);
+        }
+        catch (Exception e)
+        {
+            Start = DateTime.MinValue;
+            ThreadManager.Instance.ExecuteOnMainThread(() => ConsoleDebugger.Instance.Log(e.Message));
+        }
     }
 }
 
@@ -61,9 +78,8 @@ public class BIOPACMessageHandler : Singleton<BIOPACMessageHandler>
     private int _messagesReceived = 0;
     private void Start()
     {
-        return;
-        File.WriteAllText(_outputDumpFilePath, "Starting a new BIOPAC Connection\n", System.Text.Encoding.UTF8);
-        File.WriteAllText(_debugOutputFilePath, "Starting a new BIOPAC Connection\n", System.Text.Encoding.UTF8);
+        //File.WriteAllText(_outputDumpFilePath, "Starting a new BIOPAC Connection\n", System.Text.Encoding.UTF8);
+        //File.WriteAllText(_debugOutputFilePath, "Starting a new BIOPAC Connection\n", System.Text.Encoding.UTF8);
 
         BIOPACClient.Instance.ConnectionStatusChange += OnBIOPACConnectionStatusChange;
         
@@ -81,6 +97,7 @@ public class BIOPACMessageHandler : Singleton<BIOPACMessageHandler>
             case BIOPACClient.Status.Connecting:
                 break;
             case BIOPACClient.Status.Connected:
+
                 break;
             case BIOPACClient.Status.Receving:
                 break;
@@ -91,15 +108,7 @@ public class BIOPACMessageHandler : Singleton<BIOPACMessageHandler>
 
     private void Update()
     {
-        //messageReceived.text = _messagesReceived.ToString();
-        //messageToProcess.text = _receivedMessages.Count.ToString();
-
-        if (Input.GetKeyDown(KeyCode.P))
-        {
-            Thread processMessageThread = new Thread(ProcessIncomingMessages);
-            processMessageThread.Start();
-        }
-           
+                 
     }
 
     private void OnGUI()
@@ -130,34 +139,35 @@ public class BIOPACMessageHandler : Singleton<BIOPACMessageHandler>
                 if (!Directory.Exists(slideshowRespondentFolder))
                     Directory.CreateDirectory(slideshowRespondentFolder);
 
-                _outputSlideShowFilePath = Path.Combine(slideshowRespondentFolder, _currentSlideshow.RespondentName + "_" + DateTime.Now.ToString("yyyy_MM_dd_hh_mm_ss_fff"));
+                _outputSlideShowFilePath = Path.Combine(slideshowRespondentFolder, _currentSlideshow.RespondentName + "_" + DateTime.Now.ToString("yyyy_MM_dd_hh_mm_ss_fff") + ".csv");
 
                 File.WriteAllText(_outputSlideShowFilePath, msg);
-                ThreadManager.ExecuteOnMainThread(() =>
+                ThreadManager.Instance.ExecuteOnMainThread(() =>
                     ConsoleDebugger.Instance.Log(
                         $"Slideshow Started. Analysis:{_currentSlideshow.AnalysisName}, Respondent:{_currentSlideshow.RespondentName}"));
 
                 //DEBUG
                 TimeSpan desync = DateTime.Now - _currentSlideshow.Start;
-                ThreadManager.ExecuteOnMainThread(() =>
+                ThreadManager.Instance.ExecuteOnMainThread(() =>
                     ConsoleDebugger.Instance.Log(
                         $"Desync between clocks:{desync.ToString("G")}"));
 
 
-                SlideshowStarted?.Invoke(_currentSlideshow);
+                ThreadManager.Instance.ExecuteOnMainThread( () => SlideshowStarted?.Invoke(_currentSlideshow));
                 continue;
             }
 
             if (messageType == BIOPACMessages.Type.SlideshowEnd && _currentSlideshow != null)
             {
                 //The slideshow has ended
-                ThreadManager.ExecuteOnMainThread(() =>
+                ThreadManager.Instance.ExecuteOnMainThread(() =>
                     ConsoleDebugger.Instance.Log(
                         $"Slideshow Stopped. Analysis:{_currentSlideshow.AnalysisName}, Respondent:{_currentSlideshow.RespondentName}"));
                 File.AppendAllText(_outputSlideShowFilePath, msg);
                 _currentSlideshow.isRunning = false;
                 _currentSlideshow.SetSlideshowEndFromMessage(msg);
-                SlideshowStopped?.Invoke(_currentSlideshow);
+
+                ThreadManager.Instance.ExecuteOnMainThread(() => SlideshowStopped?.Invoke(_currentSlideshow));
                 
             }
 
