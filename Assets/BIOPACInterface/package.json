@@ -10,7 +10,7 @@
   "licensesUrl": "https://example.com/licensing.html",
   "dependencies": 
   {
-    "com.yasirkula.simplefilebrowser": "https://github.com/yasirkula/UnitySimpleFileBrowser.git#1.5.1"    
+        
   },
  "keywords": [
     "Custom",

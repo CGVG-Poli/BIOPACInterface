@@ -80,13 +80,6 @@
       "dependencies": {},
       "hash": "bb3d5067e49e403d8b8ba15c036d313b4dd2c696"
     },
-    "com.yasirkula.simplefilebrowser": {
-      "version": "https://github.com/yasirkula/UnitySimpleFileBrowser.git",
-      "depth": 0,
-      "source": "git",
-      "dependencies": {},
-      "hash": "333c21cbf0acc31e049bfa4b1e84abb57ed200e2"
-    },
     "com.unity.modules.ai": {
       "version": "1.0.0",
       "depth": 0,
