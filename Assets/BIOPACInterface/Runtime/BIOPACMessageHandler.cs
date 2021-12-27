@@ -33,7 +33,7 @@ public class Slideshow
         catch(Exception e)
         {
             Start = DateTime.MinValue;
-            ThreadManager.Instance.ExecuteOnMainThread( () => ConsoleDebugger.Instance.Log(e.Message)); 
+            ThreadManager.Instance.ExecuteOnMainThread( () => Debug.Log(e.Message)); 
         }
 
         RespondentName = messageParts[6];
@@ -51,7 +51,7 @@ public class Slideshow
         catch (Exception e)
         {
             Start = DateTime.MinValue;
-            ThreadManager.Instance.ExecuteOnMainThread(() => ConsoleDebugger.Instance.Log(e.Message));
+            ThreadManager.Instance.ExecuteOnMainThread(() => Debug.Log(e.Message));
         }
     }
 }
@@ -143,13 +143,13 @@ public class BIOPACMessageHandler : Singleton<BIOPACMessageHandler>
 
                 File.WriteAllText(_outputSlideShowFilePath, msg);
                 ThreadManager.Instance.ExecuteOnMainThread(() =>
-                    ConsoleDebugger.Instance.Log(
+                    Debug.Log(
                         $"Slideshow Started. Analysis:{_currentSlideshow.AnalysisName}, Respondent:{_currentSlideshow.RespondentName}"));
 
                 //DEBUG
                 TimeSpan desync = DateTime.Now - _currentSlideshow.Start;
                 ThreadManager.Instance.ExecuteOnMainThread(() =>
-                    ConsoleDebugger.Instance.Log(
+                    Debug.Log(
                         $"Desync between clocks:{desync.ToString("G")}"));
 
 
@@ -161,7 +161,7 @@ public class BIOPACMessageHandler : Singleton<BIOPACMessageHandler>
             {
                 //The slideshow has ended
                 ThreadManager.Instance.ExecuteOnMainThread(() =>
-                    ConsoleDebugger.Instance.Log(
+                    Debug.Log(
                         $"Slideshow Stopped. Analysis:{_currentSlideshow.AnalysisName}, Respondent:{_currentSlideshow.RespondentName}"));
                 File.AppendAllText(_outputSlideShowFilePath, msg);
                 _currentSlideshow.isRunning = false;

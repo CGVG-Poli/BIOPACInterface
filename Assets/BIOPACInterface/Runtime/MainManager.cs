@@ -36,7 +36,7 @@ public class MainManager : Singleton<MainManager>
         if(Input.GetKeyDown(KeyCode.A))
         {
             SimpleTime currentTime = new SimpleTime(DateTime.Now);
-            ConsoleDebugger.Instance.Log($"Current time: {currentTime}");
+            Debug.Log($"Current time: {currentTime}");
         }
 
         ;

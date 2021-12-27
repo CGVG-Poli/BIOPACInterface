@@ -63,7 +63,7 @@ public class BIOPACClient : Singleton<BIOPACClient>
         ConnectionStatus = Status.Connecting;
         _client = new TcpClient();
         
-        ConsoleDebugger.Instance.Log($"Connecting to Server IP:{IPAddress} // PORT:{Port}");
+        Debug.Log($"Connecting to Server IP:{IPAddress} // PORT:{Port}");
 
         try
         {
@@ -71,7 +71,7 @@ public class BIOPACClient : Singleton<BIOPACClient>
         }
         catch (Exception e)
         {
-            ConsoleDebugger.Instance.Log("EXCEPTION: " + e.Message);
+            Debug.Log("EXCEPTION: " + e.Message);
             ConnectionStatus = Status.Disconnected;
             return;
         }
@@ -83,7 +83,7 @@ public class BIOPACClient : Singleton<BIOPACClient>
         if (_client.Connected)
         {
             ConnectionStatus = Status.Connected;
-            ConsoleDebugger.Instance.Log($"BIOPACClient connected");
+            Debug.Log($"BIOPACClient connected");
             var stream = _client.GetStream();
             stream.BeginRead(_receivedBytes, 0, _receivedBytes.Length, ReceiveCallback, null);
         }
@@ -120,7 +120,7 @@ public class BIOPACClient : Singleton<BIOPACClient>
                 stream.BeginRead(_receivedBytes, 0, _dataBufferSize, ReceiveCallback, null);
             }
             else {
-                ConsoleDebugger.Instance.Log($"Received 0 bytes from server");
+                Debug.Log($"Received 0 bytes from server");
                 //Disconnect();
                 return;
             }
@@ -128,7 +128,7 @@ public class BIOPACClient : Singleton<BIOPACClient>
         }
         catch (Exception ex)
         {
-            ConsoleDebugger.Instance.Log($"Client-side error receiving data: {ex}");
+            Debug.Log($"Client-side error receiving data: {ex}");
         }
     }
 
@@ -148,7 +148,7 @@ public class BIOPACClient : Singleton<BIOPACClient>
             }
             catch (Exception e)
             {
-                ConsoleDebugger.Instance.Log("EXEPTION: " + e.Message);
+                Debug.Log("EXEPTION: " + e.Message);
             }
         }
 
@@ -158,12 +158,12 @@ public class BIOPACClient : Singleton<BIOPACClient>
         }
         catch (Exception e)
         {
-            ConsoleDebugger.Instance.Log("EXEPTION: "+ e.Message);
+            Debug.Log("EXEPTION: "+ e.Message);
             return;
         }
 
         ConnectionStatus = Status.Disconnected;
         _client = null;
-        ConsoleDebugger.Instance.Log("Successfully disconnected from Server");
+        Debug.Log("Successfully disconnected from Server");
     }
 }

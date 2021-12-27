@@ -34,7 +34,7 @@ public class SyncManager : Singleton<SyncManager>
         if (!isServer)
         {
             message.ClientTime = new SimpleTime(DateTime.Now);
-            ConsoleDebugger.Instance.Log($"Client Received Server Time: {message.ServerTime}. Now sending its time.");
+            Debug.Log($"Client Received Server Time: {message.ServerTime}. Now sending its time.");
             message.ClientTimeSending = new SimpleTime(DateTime.Now);
             BIOPACInterfaceClient.Instance.SendMessageToServer<ClientServerSyncMessage>(message);
             return;
@@ -55,7 +55,7 @@ public class SyncManager : Singleton<SyncManager>
         _cyclesToComplete--;
         _calculatedDelays.Add(clientDelta);
         //Debug.Log($"Roundtrip Time: {rountTripTime} // Latency: {networkLatency}// Client Time: {message.ClientTime} // Server Time: {message.ServerTime}");
-        ConsoleDebugger.Instance.Log($"Current Sync Delta {clientDelta} // Remaining Sync CyclesClocks Sync cycle {_cyclesToComplete}");
+        Debug.Log($"Current Sync Delta {clientDelta} // Remaining Sync CyclesClocks Sync cycle {_cyclesToComplete}");
         
         if(_cyclesToComplete > 0)
             return;
@@ -63,7 +63,7 @@ public class SyncManager : Singleton<SyncManager>
         double finalDelta = CalculateDelta();
 
         TimeSpan ts = TimeSpan.FromMilliseconds(finalDelta);
-        ConsoleDebugger.Instance.Log($"Final clock sync delta:{finalDelta} ms -> {ts}");
+        Debug.Log($"Final clock sync delta:{finalDelta} ms -> {ts}");
 
         _lastComputedDelta = finalDelta;
         _syncCoroutine = null;

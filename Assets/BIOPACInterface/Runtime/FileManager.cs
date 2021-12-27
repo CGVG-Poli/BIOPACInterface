@@ -44,12 +44,12 @@ public class FileManager : Singleton<FileManager>
         {
             SlideshowsOutputFolder = paths[0];
             PlayerPrefs.SetString("LastSlideshowOutputFolder", SlideshowsOutputFolder);
-            ConsoleDebugger.Instance.Log($"Selected new Slideshow Output folder {SlideshowsOutputFolder}");
+            Debug.Log($"Selected new Slideshow Output folder {SlideshowsOutputFolder}");
             FileBrowserClosed?.Invoke();
         },
             () =>
             {
-                ConsoleDebugger.Instance.Log($"Canceled Slideshow Output folder selection, keeping: {SlideshowsOutputFolder}");
+                Debug.Log($"Canceled Slideshow Output folder selection, keeping: {SlideshowsOutputFolder}");
                 FileBrowserClosed?.Invoke();
             },
         FileBrowser.PickMode.Folders, false, SlideshowsOutputFolder, null, "Select Slideshows Output Folder", "Select");

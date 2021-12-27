@@ -55,13 +55,13 @@ public class BIOPACInterfaceClient : Singleton<BIOPACInterfaceClient>, INetEvent
         _netClient.DisconnectTimeout = Int32.MaxValue;
         _netClient.Start();
         SubscribeToMessages();
-        ConsoleDebugger.Instance.Log("Starting BIOPACInterface Client");
+        Debug.Log("Starting BIOPACInterface Client");
     }
 
     public void StopClient()
     {
         _netClient?.Stop();
-        ConsoleDebugger.Instance.Log("Stopped BIOPACInterface Client");
+        Debug.Log("Stopped BIOPACInterface Client");
 
     }
     
@@ -75,7 +75,7 @@ public class BIOPACInterfaceClient : Singleton<BIOPACInterfaceClient>, INetEvent
 
     public void OnPeerConnected(NetPeer peer)
     {
-        ConsoleDebugger.Instance.Log("[CLIENT] Connected to server");
+        Debug.Log("[CLIENT] Connected to server");
         _serverPeer = peer;
 
         ClientInformationMessage message = new ClientInformationMessage();
@@ -86,12 +86,12 @@ public class BIOPACInterfaceClient : Singleton<BIOPACInterfaceClient>, INetEvent
 
     public void OnPeerDisconnected(NetPeer peer, DisconnectInfo disconnectInfo)
     {
-        ConsoleDebugger.Instance.Log("[CLIENT] We disconnected because " + disconnectInfo.Reason);
+        Debug.Log("[CLIENT] We disconnected because " + disconnectInfo.Reason);
     }
 
     public void OnNetworkError(IPEndPoint endPoint, SocketError socketError)
     {
-        ConsoleDebugger.Instance.Log("[CLIENT] We received error " + socketError);
+        Debug.Log("[CLIENT] We received error " + socketError);
     }
 
     public void OnNetworkReceive(NetPeer peer, NetPacketReader reader, DeliveryMethod deliveryMethod)
@@ -104,7 +104,7 @@ public class BIOPACInterfaceClient : Singleton<BIOPACInterfaceClient>, INetEvent
     {
         if (messageType == UnconnectedMessageType.BasicMessage && _netClient.ConnectedPeersCount == 0 && reader.GetInt() == 1)
         {
-            ConsoleDebugger.Instance.Log("[CLIENT] Received discovery response. Connecting to: " + remoteEndPoint);
+            Debug.Log("[CLIENT] Received discovery response. Connecting to: " + remoteEndPoint);
             _netClient.Connect(remoteEndPoint, "sample_app");
         }
     }

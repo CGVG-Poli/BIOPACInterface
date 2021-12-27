@@ -48,7 +48,7 @@ public class BIOPACInterfaceServer : Singleton<BIOPACInterfaceServer>, INetEvent
 
     public void StartServer(int port)
     {
-        ConsoleDebugger.Instance.Log($"Starting BIOPACInterfaceServer on port {port}");
+        Debug.Log($"Starting BIOPACInterfaceServer on port {port}");
         NetDebug.Logger = this;
         _dataWriter = new NetDataWriter();
         _netServer = new NetManager(this);
@@ -78,23 +78,23 @@ public class BIOPACInterfaceServer : Singleton<BIOPACInterfaceServer>, INetEvent
             _netServer.Stop();
         
         ServerStopped?.Invoke();
-        ConsoleDebugger.Instance.Log("Stopped BIOPACInterface Server");
+        Debug.Log("Stopped BIOPACInterface Server");
     }
 
     #region Network Callbacks
 
     public void OnPeerConnected(NetPeer peer)
     {
-        ConsoleDebugger.Instance.Log($"BIOPACInterfaceClient connected with ID {peer.Id}");
+        Debug.Log($"BIOPACInterfaceClient connected with ID {peer.Id}");
         _peers[peer.Id.ToString()] = peer;
     }
 
     public void OnPeerDisconnected(NetPeer peer, DisconnectInfo disconnectInfo)
     {
-        ConsoleDebugger.Instance.Log("[SERVER] peer disconnected " + peer.EndPoint + ", info: " + disconnectInfo.Reason);
+        Debug.Log("[SERVER] peer disconnected " + peer.EndPoint + ", info: " + disconnectInfo.Reason);
         if(!_peers.ContainsKey(peer.Id.ToString()))
         {
-            ConsoleDebugger.Instance.Log($"Peer with ID {peer.Id} was not present in previous connections");
+            Debug.Log($"Peer with ID {peer.Id} was not present in previous connections");
             return;
         }
         
@@ -105,7 +105,7 @@ public class BIOPACInterfaceServer : Singleton<BIOPACInterfaceServer>, INetEvent
 
     public void OnNetworkError(IPEndPoint endPoint, SocketError socketError)
     {
-        ConsoleDebugger.Instance.Log("[SERVER] error " + socketError);
+        Debug.Log("[SERVER] error " + socketError);
     }
 
     public void OnNetworkReceive(NetPeer peer, NetPacketReader reader, DeliveryMethod deliveryMethod)
@@ -117,7 +117,7 @@ public class BIOPACInterfaceServer : Singleton<BIOPACInterfaceServer>, INetEvent
     {
         if (messageType == UnconnectedMessageType.Broadcast)
         {
-            ConsoleDebugger.Instance.Log("[SERVER] Received discovery request. Send discovery response");
+            Debug.Log("[SERVER] Received discovery request. Send discovery response");
             NetDataWriter resp = new NetDataWriter();
             resp.Put(1);
             _netServer.SendUnconnectedMessage(resp, remoteEndPoint);
