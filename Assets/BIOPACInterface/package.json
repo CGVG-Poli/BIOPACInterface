@@ -1,0 +1,32 @@
+{
+  "name": "com.fs.biopac-interface",
+  "version": "1.0.0",
+  "displayName": "BIOPAC Interface",
+  "description": "This is my first custom package",
+  "unity": "2020.3",
+  "unityRelease": "0b5",
+  "documentationUrl": "https://example.com/",
+  "changelogUrl": "https://example.com/changelog.html",
+  "licensesUrl": "https://example.com/licensing.html",
+  "dependencies": 
+  {
+    "com.yasirkula.simplefilebrowser": "https://github.com/yasirkula/UnitySimpleFileBrowser.git"    
+  },
+ "keywords": [
+    "Custom",
+    "BIOPAC",
+    "Bio Signals"
+  ],
+  "author": {
+    "name": "Francesco Strada",
+    "email": "francesco.strada@polito.it",
+    "url": "https://github.com/francescoStrada"
+  },
+  "samples": [
+        {
+            "displayName": "BIOPAC Interface Client Server",
+            "description": "Sample of the BIOPAC Interface on a client/server architecture",
+            "path": "Samples/BIOPACInterface_Client_Server"
+        }
+    ]
+}
