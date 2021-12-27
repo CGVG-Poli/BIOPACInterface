@@ -1,0 +1,17 @@
+{
+    "name": "FS.BIOPACInterface",
+    "rootNamespace": "",
+    "references": [
+        "GUID:9bdb88a7e74e74c429be73b719067041",
+        "GUID:c685d05731421f64287ad6d13be5af0e"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}
