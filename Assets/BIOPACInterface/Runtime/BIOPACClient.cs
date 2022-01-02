@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Net.Sockets;
 using UnityEngine;
+using Utils;
 
 public class BIOPACClient : Singleton<BIOPACClient>
 {
@@ -44,6 +45,13 @@ public class BIOPACClient : Singleton<BIOPACClient>
     {
         get => _port;
         set => _port = value;
+    }
+
+    protected override void Awake()
+    {
+        base.Awake();
+        _port = Configuration.GetInt("BIOPACClientPORT", _port);
+        _ipAddress = Configuration.GetString("BIOPACClientIP", _ipAddress);
     }
 
     void Start()

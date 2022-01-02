@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using LiteNetLib;
 using UnityEngine;
+using Utils;
 
 //The sync algorithm was taken from 
 //https://gamedev.stackexchange.com/questions/93477/how-to-keep-server-client-clocks-in-sync-for-precision-networked-games-like-quak
@@ -12,8 +13,8 @@ public class SyncManager : Singleton<SyncManager>
 {
     public event Action<double> ClocksDesyncComputed; 
 
-    private readonly int SYNC_CYCLES = 8;
-    private readonly float CYCLES_DELAY = 0.05f;
+    private int _syncCycles = 8;
+    private float _cyclesDelay = 0.05f;
     
     private Coroutine _syncCoroutine;
     private int _cyclesToComplete;
@@ -22,6 +23,13 @@ public class SyncManager : Singleton<SyncManager>
     private double _lastComputedDelta = 0;
 
     public double LastComputedDelta => _lastComputedDelta;
+
+    protected override void Awake()
+    {
+        base.Awake();
+        _syncCycles = Configuration.GetInt("SyncCycles", _syncCycles);
+        _cyclesDelay = Configuration.GetFloat("CyclesDelay", _cyclesDelay);
+    }
 
     void Start()
     {
@@ -106,7 +114,7 @@ public class SyncManager : Singleton<SyncManager>
 
     public void CalculateClientServerSyncTime()
     {
-        CalculateClientServerSyncTime(SYNC_CYCLES, CYCLES_DELAY);
+        CalculateClientServerSyncTime(_syncCycles, _cyclesDelay);
     }
     public void CalculateClientServerSyncTime(int cycles, float cyclesDelay)
     {

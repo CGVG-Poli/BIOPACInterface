@@ -7,6 +7,7 @@ using System.Net.Sockets;
 using UnityEngine;
 using LiteNetLib;
 using LiteNetLib.Utils;
+using Utils;
 
 public class BIOPACInterfaceServer : Singleton<BIOPACInterfaceServer>, INetEventListener, INetLogger
 {
@@ -26,6 +27,12 @@ public class BIOPACInterfaceServer : Singleton<BIOPACInterfaceServer>, INetEvent
     public Dictionary<string, NetPeer> Peers => _peers;
 
     public int DefaultConnectionPort => _connectionPort;
+
+    protected override void Awake()
+    {
+        base.Awake();
+        _connectionPort = Configuration.GetInt("BIOPACInterfacePORT", _connectionPort);
+    }
 
     void Start()
     {
