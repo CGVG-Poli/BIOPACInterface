@@ -71,7 +71,7 @@ public class BIOPACSessionUI : Singleton<BIOPACSessionUI>
         _respondentName.text = session.RespondentName;
         _recordingStart.text = session.RecordingSessionStart.ToString("yyyy/M/d HH:mm:ss.fff");
         _slideshowStart.text = session.SlideshowStart.ToString("yyyy/M/d HH:mm:ss.fff");
-        _slideshowStop.text = session.SlideshowEnd.ToString("yyyy/M/d HH:mm:ss.fff");
+        _slideshowStop.text = session.IsSlideshowCompleted() ? session.SlideshowEnd.ToString("yyyy/M/d HH:mm:ss.fff") : "Ongoing...";
         _clientName.text = session.ConnectedClient;
         _clientDesync.text = session.ConnectedClientClockDesync.ToString();
     }

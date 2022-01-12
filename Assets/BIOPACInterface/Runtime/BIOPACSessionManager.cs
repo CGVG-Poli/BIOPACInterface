@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Text;
 using UnityEngine;
+using System.Linq;
 
 public class BIOPACSession
 {
@@ -14,6 +15,11 @@ public class BIOPACSession
     public DateTime RecordingSessionStart;
     public DateTime SlideshowStart;
     public DateTime SlideshowEnd;
+
+    public bool IsSlideshowCompleted()
+    {
+        return SlideshowEnd != DateTime.MinValue;
+    }
 }
 public class BIOPACSessionManager : MonoBehaviour
 {
@@ -52,32 +58,14 @@ public class BIOPACSessionManager : MonoBehaviour
         _currentSession.ConnectedClientClockDesync = SyncManager.Instance.LastComputedDelta;
         
         BIOPACSessionUI.Instance.SetSessionInfos(_currentSession);
-        
-        // StringBuilder sb = new StringBuilder();
-        // sb.Append(_currentSession.AnalysisName).AppendLine();
-        // sb.Append(_currentSession.RespondentName).AppendLine();
-        // sb.Append(_currentSession.RecordingSessionStart.ToString("yyyy/M/d HH:mm:ss.fff")).AppendLine();
-        // sb.Append(_currentSession.SlideshowStart.ToString("yyyy/M/d HH:mm:ss.fff")).AppendLine();
-        // //sb.Append(_currentSession.SlideshowEnd.ToString("yyyy/M/d HH:mm:ss.fff")).AppendLine();
-        // sb.Append(_currentSession.ConnectedClient).AppendLine();
-        // sb.Append(_currentSession.ConnectedClientClockDesync).AppendLine();
-        // BIOPACSessionUI.Instance.SessionStatus.text = sb.ToString();
+
+        string filePath = Path.Combine(FileManager.Instance.SlideshowsOutputFolder, "biopac_sessions_summary.csv");
+        WriteSessionInfoToFile(_currentSession, filePath);
     }
 
     private void OnSlideshowStopped(Slideshow slideshow)
     {
-        _currentSession.SlideshowEnd = slideshow.End;
-
-        // // WRITE INFORMATION TO UI
-        // StringBuilder sb = new StringBuilder();
-        // sb.Append(_currentSession.AnalysisName).AppendLine();
-        // sb.Append(_currentSession.RespondentName).AppendLine();
-        // sb.Append(_currentSession.RecordingSessionStart.ToString("yyyy/M/d HH:mm:ss.fff")).AppendLine();
-        // sb.Append(_currentSession.SlideshowStart.ToString("yyyy/M/d HH:mm:ss.fff")).AppendLine();
-        // sb.Append(_currentSession.SlideshowEnd.ToString("yyyy/M/d HH:mm:ss.fff")).AppendLine();
-        // sb.Append(_currentSession.ConnectedClient).AppendLine();
-        // sb.Append(_currentSession.ConnectedClientClockDesync).AppendLine();
-        
+        _currentSession.SlideshowEnd = slideshow.End;        
 
         if(BIOPACSessionUI.Instance != null)
             BIOPACSessionUI.Instance.SetSessionInfos(_currentSession);
@@ -86,22 +74,37 @@ public class BIOPACSessionManager : MonoBehaviour
         //WRITE INFORMATIONS TO FILE
         
         string filePath = Path.Combine(FileManager.Instance.SlideshowsOutputFolder, "biopac_sessions_summary.csv");
-
-        if(!File.Exists(filePath))
-            File.WriteAllText(filePath, "AnalysisName;RespondentName;RecordingSessionStart;SlideshowStart;SlideshowEnd;ConnectedClient;ConnectedClientClockDesync\n");
-        
-        StringBuilder sb = new StringBuilder();
-        sb.Append(_currentSession.AnalysisName).Append(";");
-        sb.Append(_currentSession.RespondentName).Append(";");
-        sb.Append(_currentSession.RecordingSessionStart.ToString("yyyy/M/d HH:mm:ss.fff")).Append(";");
-        sb.Append(_currentSession.SlideshowStart.ToString("yyyy/M/d HH:mm:ss.fff")).Append(";");
-        sb.Append(_currentSession.SlideshowEnd.ToString("yyyy/M/d HH:mm:ss.fff")).Append(";");
-        sb.Append(_currentSession.ConnectedClient).Append(";");
-        sb.Append(_currentSession.ConnectedClientClockDesync).AppendLine();
-        
-        File.AppendAllText(filePath, sb.ToString());
+        DeleteLastLine(filePath);
+        WriteSessionInfoToFile(_currentSession, filePath);
 
         _currentSession = null;
+    }
+
+    private void WriteSessionInfoToFile(BIOPACSession session, string filePath)
+    {
+        if (!File.Exists(filePath))
+            File.WriteAllText(filePath, "AnalysisName;RespondentName;RecordingSessionStart;SlideshowStart;SlideshowEnd;ConnectedClient;ConnectedClientClockDesync\n");
+
+        StringBuilder sb = new StringBuilder();
+        sb.Append(session.AnalysisName).Append(";");
+        sb.Append(session.RespondentName).Append(";");
+        sb.Append(session.RecordingSessionStart.ToString("yyyy/M/d HH:mm:ss.fff")).Append(";");
+        sb.Append(session.SlideshowStart.ToString("yyyy/M/d HH:mm:ss.fff")).Append(";");
+        string slideshowEnd = session.IsSlideshowCompleted() ? session.SlideshowEnd.ToString("yyyy/M/d HH:mm:ss.fff") : "Not Completed";
+        sb.Append(slideshowEnd).Append(";");
+        sb.Append(session.ConnectedClient).Append(";");
+        sb.Append(session.ConnectedClientClockDesync).AppendLine();
+
+        File.AppendAllText(filePath, sb.ToString());
+    }
+
+    private void DeleteLastLine(string filePath)
+    {
+        List<string> lines = File.ReadAllLines(filePath).ToList();
+        if (lines.Count == 1) //File only contains Header
+            return;
+
+        File.WriteAllLines(filePath, lines.GetRange(0, lines.Count - 1).ToArray());
     }
     
 }
