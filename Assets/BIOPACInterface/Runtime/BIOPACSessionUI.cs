@@ -38,6 +38,14 @@ public class BIOPACSessionUI : Singleton<BIOPACSessionUI>
             Application.OpenURL($"file://{FileManager.Instance.SlideshowsOutputFolder}");
         });
 
+        _analysisName.text = "Not Started";
+        _respondentName.text = "Not Started";
+        _recordingStart.text = "Not Started";
+        _slideshowStart.text = "Not Started";
+        _slideshowStop.text = "Not Started";
+        _clientName.text = "Not Started";
+        _clientDesync.text = "Not Started";
+
     }
 
     private IEnumerator OpenFileBrowser()

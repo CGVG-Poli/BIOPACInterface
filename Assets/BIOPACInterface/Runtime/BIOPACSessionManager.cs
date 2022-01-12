@@ -7,7 +7,7 @@ using UnityEngine;
 
 public class BIOPACSession
 {
-    public string ConnectedClient;
+    public string ConnectedClient = "Not Connected";
     public double ConnectedClientClockDesync;
     public string AnalysisName;
     public string RespondentName;
@@ -19,7 +19,7 @@ public class BIOPACSessionManager : MonoBehaviour
 {
     private BIOPACSession _currentSession;
 
-    private string _lastConnectedClient;
+    private string _lastConnectedClient = "Not Connected";
     void Start()
     {
         BIOPACMessageHandler.Instance.SlideshowStarted += OnSlideshowStarted;
