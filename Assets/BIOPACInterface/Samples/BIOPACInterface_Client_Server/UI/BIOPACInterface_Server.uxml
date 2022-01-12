@@ -1,0 +1,61 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" xsi="http://www.w3.org/2001/XMLSchema-instance" engine="UnityEngine.UIElements" editor="UnityEditor.UIElements" noNamespaceSchemaLocation="../../../../../UIElementsSchema/UIElements.xsd" editor-extension-mode="False">
+    <ui:Template name="CardInfo" />
+    <Style src="BIOPACInterface.uss" />
+    <ui:VisualElement name="background" style="flex-grow: 1; flex-direction: row; background-color: rgb(38, 40, 56);">
+        <ui:VisualElement name="left-pane" style="width: 50%;">
+            <ui:VisualElement name="iMotions-pane" style="align-items: center; justify-content: center; height: 50%;">
+                <ui:VisualElement name="iMotion-card-bg" class="card-background" style="width: 90%; height: 90%; align-items: stretch;">
+                    <ui:Label text="iMotion Connection" display-tooltip-when-elided="true" class="text-header" style="font-size: 20%;" />
+                    <ui:VisualElement name="connection-data" style="margin-left: 5px; margin-right: 5px; margin-top: 5px; margin-bottom: 5px; flex-direction: row; flex-wrap: nowrap; height: 15%;">
+                        <ui:TextField picking-mode="Ignore" text="port" name="imotion-port" multiline="false" style="width: 50%; -unity-text-align: middle-center; white-space: normal; color: rgb(0, 0, 0);" />
+                        <ui:TextField picking-mode="Ignore" text="ip" name="imotion-ip" is-delayed="false" focusable="false" style="width: auto; flex-grow: 1;" />
+                    </ui:VisualElement>
+                    <ui:VisualElement name="connection-buttons" style="flex-direction: row; flex-wrap: nowrap; margin-left: 8px; margin-right: 8px; margin-top: 8px; margin-bottom: 8px; height: 15%;">
+                        <ui:Button text="Disconnect" display-tooltip-when-elided="true" name="imotion-disconnect-btn" class="card-button" style="font-size: 12px; border-left-width: 0; border-right-width: 0; border-top-width: 0; border-bottom-width: 0; flex-grow: 1;" />
+                        <ui:Button text="Connect" display-tooltip-when-elided="true" name="imotion-connect-btn" class="card-button" style="font-size: 12%;" />
+                    </ui:VisualElement>
+                    <ui:VisualElement name="connection-status-panel" style="flex-direction: row; flex-grow: 1; width: auto; align-items: center; justify-content: center; color: rgb(56, 56, 56); flex-wrap: wrap; margin-left: 7px; margin-right: 7px; margin-top: 7px; margin-bottom: 7px; padding-left: 3px; padding-right: 3px; padding-top: 3px; padding-bottom: 3px;">
+                        <ui:VisualElement name="connection-status" class="card-info-container">
+                            <ui:Instance template="CardInfo" name="CardInfo" class="card-info" />
+                        </ui:VisualElement>
+                        <ui:VisualElement name="messages-status" class="card-info-container">
+                            <ui:VisualElement name="CardInfo" class="card-info">
+                                <ui:VisualElement name="card-info-border" class="card-info-border" style="flex-direction: row;">
+                                    <ui:VisualElement style="width: 30%; background-image: url(&apos;/Assets/BIOPACInterface/Samples/BIOPACInterface_Client_Server/UI/Sprites/received.png&apos;); -unity-background-scale-mode: scale-to-fit; margin-left: 0; margin-right: 0; margin-top: 5px; margin-bottom: 5px; -unity-background-image-tint-color: rgb(154, 155, 177); -unity-slice-left: 0; -unity-slice-top: 0; -unity-slice-right: 0; -unity-slice-bottom: 0; padding-left: 0; padding-right: 0; padding-top: 0; padding-bottom: 0;" />
+                                    <ui:VisualElement style="flex-grow: 1; margin-left: 5px;">
+                                        <ui:Label text="Messages Status" display-tooltip-when-elided="true" name="label-title" style="height: auto; font-size: 18%; margin-left: 0; margin-right: 0; margin-top: 0; margin-bottom: 0; padding-left: 0; padding-right: 0; padding-top: 0; padding-bottom: 0; color: rgb(55, 140, 255); width: auto; white-space: normal; flex-grow: 0.2; -unity-text-align: middle-left;" />
+                                        <ui:Label text="Label" display-tooltip-when-elided="true" name="label-info" style="flex-grow: 1; -unity-text-align: middle-left; margin-left: 0; margin-right: 0; margin-top: 0; margin-bottom: 0; padding-left: 0; padding-right: 0; padding-top: 0; padding-bottom: 0; color: rgb(255, 255, 255); font-size: 16%;" />
+                                    </ui:VisualElement>
+                                </ui:VisualElement>
+                            </ui:VisualElement>
+                        </ui:VisualElement>
+                        <ui:VisualElement name="messages-to-process" class="card-info-container">
+                            <ui:VisualElement name="CardInfo" class="card-info">
+                                <ui:VisualElement name="card-info-border" class="card-info-border" style="flex-direction: row;">
+                                    <ui:VisualElement style="width: 30%; background-image: url(&apos;/Assets/BIOPACInterface/Samples/BIOPACInterface_Client_Server/UI/Sprites/queue.png&apos;); -unity-background-scale-mode: scale-to-fit; margin-left: 0; margin-right: 0; margin-top: 5px; margin-bottom: 5px; -unity-background-image-tint-color: rgb(154, 155, 177); -unity-slice-left: 0; -unity-slice-top: 0; -unity-slice-right: 0; -unity-slice-bottom: 0; padding-left: 0; padding-right: 0; padding-top: 0; padding-bottom: 0;" />
+                                    <ui:VisualElement style="flex-grow: 1; margin-left: 5px;">
+                                        <ui:Label text="Queued Messages" display-tooltip-when-elided="true" name="label-title" style="height: 50%; font-size: 18%; margin-left: 0; margin-right: 0; margin-top: 0; margin-bottom: 0; padding-left: 0; padding-right: 0; padding-top: 0; padding-bottom: 0; color: rgb(55, 140, 255); width: 100%; white-space: normal; -unity-text-align: middle-left;" />
+                                        <ui:Label text="Label" display-tooltip-when-elided="true" name="label-info" style="flex-grow: 1; -unity-text-align: middle-left; margin-left: 0; margin-right: 0; margin-top: 0; margin-bottom: 0; padding-left: 0; padding-right: 0; padding-top: 0; padding-bottom: 0; color: rgb(255, 255, 255); font-size: 16px;" />
+                                    </ui:VisualElement>
+                                </ui:VisualElement>
+                            </ui:VisualElement>
+                        </ui:VisualElement>
+                        <ui:VisualElement class="card-info-container" style="display: flex; visibility: hidden;">
+                            <ui:Instance template="CardInfo" name="CardInfo" class="card-info" />
+                        </ui:VisualElement>
+                    </ui:VisualElement>
+                </ui:VisualElement>
+            </ui:VisualElement>
+            <ui:VisualElement name="slideshow-pane" style="align-items: center; justify-content: center; height: 50%;">
+                <ui:VisualElement name="slideshow-card-bg" class="card-background">
+                    <ui:Label text="Slide Show" display-tooltip-when-elided="true" class="text-header" style="font-size: 20%;" />
+                </ui:VisualElement>
+            </ui:VisualElement>
+        </ui:VisualElement>
+        <ui:VisualElement name="right-pane" style="align-items: center; justify-content: center; -unity-font-style: normal; width: 50%;">
+            <ui:VisualElement class="card-background" style="flex-shrink: 1; flex-grow: 0;">
+                <ui:Label text="Remote Connection" display-tooltip-when-elided="true" class="text-header" style="font-size: 20%;" />
+            </ui:VisualElement>
+        </ui:VisualElement>
+    </ui:VisualElement>
+</ui:UXML>
