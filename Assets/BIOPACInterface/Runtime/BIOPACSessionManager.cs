@@ -51,33 +51,36 @@ public class BIOPACSessionManager : MonoBehaviour
         _currentSession.ConnectedClient = _lastConnectedClient;
         _currentSession.ConnectedClientClockDesync = SyncManager.Instance.LastComputedDelta;
         
-        StringBuilder sb = new StringBuilder();
-        sb.Append(_currentSession.AnalysisName).AppendLine();
-        sb.Append(_currentSession.RespondentName).AppendLine();
-        sb.Append(_currentSession.RecordingSessionStart.ToString("yyyy/M/d HH:mm:ss.fff")).AppendLine();
-        sb.Append(_currentSession.SlideshowStart.ToString("yyyy/M/d HH:mm:ss.fff")).AppendLine();
-        //sb.Append(_currentSession.SlideshowEnd.ToString("yyyy/M/d HH:mm:ss.fff")).AppendLine();
-        sb.Append(_currentSession.ConnectedClient).AppendLine();
-        sb.Append(_currentSession.ConnectedClientClockDesync).AppendLine();
-        BIOPACSessionUI.Instance.SessionStatus.text = sb.ToString();
+        BIOPACSessionUI.Instance.SetSessionInfos(_currentSession);
+        
+        // StringBuilder sb = new StringBuilder();
+        // sb.Append(_currentSession.AnalysisName).AppendLine();
+        // sb.Append(_currentSession.RespondentName).AppendLine();
+        // sb.Append(_currentSession.RecordingSessionStart.ToString("yyyy/M/d HH:mm:ss.fff")).AppendLine();
+        // sb.Append(_currentSession.SlideshowStart.ToString("yyyy/M/d HH:mm:ss.fff")).AppendLine();
+        // //sb.Append(_currentSession.SlideshowEnd.ToString("yyyy/M/d HH:mm:ss.fff")).AppendLine();
+        // sb.Append(_currentSession.ConnectedClient).AppendLine();
+        // sb.Append(_currentSession.ConnectedClientClockDesync).AppendLine();
+        // BIOPACSessionUI.Instance.SessionStatus.text = sb.ToString();
     }
 
     private void OnSlideshowStopped(Slideshow slideshow)
     {
         _currentSession.SlideshowEnd = slideshow.End;
 
-        // WRITE INFORMATION TO UI
-        StringBuilder sb = new StringBuilder();
-        sb.Append(_currentSession.AnalysisName).AppendLine();
-        sb.Append(_currentSession.RespondentName).AppendLine();
-        sb.Append(_currentSession.RecordingSessionStart.ToString("yyyy/M/d HH:mm:ss.fff")).AppendLine();
-        sb.Append(_currentSession.SlideshowStart.ToString("yyyy/M/d HH:mm:ss.fff")).AppendLine();
-        sb.Append(_currentSession.SlideshowEnd.ToString("yyyy/M/d HH:mm:ss.fff")).AppendLine();
-        sb.Append(_currentSession.ConnectedClient).AppendLine();
-        sb.Append(_currentSession.ConnectedClientClockDesync).AppendLine();
+        // // WRITE INFORMATION TO UI
+        // StringBuilder sb = new StringBuilder();
+        // sb.Append(_currentSession.AnalysisName).AppendLine();
+        // sb.Append(_currentSession.RespondentName).AppendLine();
+        // sb.Append(_currentSession.RecordingSessionStart.ToString("yyyy/M/d HH:mm:ss.fff")).AppendLine();
+        // sb.Append(_currentSession.SlideshowStart.ToString("yyyy/M/d HH:mm:ss.fff")).AppendLine();
+        // sb.Append(_currentSession.SlideshowEnd.ToString("yyyy/M/d HH:mm:ss.fff")).AppendLine();
+        // sb.Append(_currentSession.ConnectedClient).AppendLine();
+        // sb.Append(_currentSession.ConnectedClientClockDesync).AppendLine();
+        
 
         if(BIOPACSessionUI.Instance != null)
-            BIOPACSessionUI.Instance.SessionStatus.text = sb.ToString();
+            BIOPACSessionUI.Instance.SetSessionInfos(_currentSession);
         
         
         //WRITE INFORMATIONS TO FILE
@@ -87,7 +90,7 @@ public class BIOPACSessionManager : MonoBehaviour
         if(!File.Exists(filePath))
             File.WriteAllText(filePath, "AnalysisName;RespondentName;RecordingSessionStart;SlideshowStart;SlideshowEnd;ConnectedClient;ConnectedClientClockDesync\n");
         
-        sb = new StringBuilder();
+        StringBuilder sb = new StringBuilder();
         sb.Append(_currentSession.AnalysisName).Append(";");
         sb.Append(_currentSession.RespondentName).Append(";");
         sb.Append(_currentSession.RecordingSessionStart.ToString("yyyy/M/d HH:mm:ss.fff")).Append(";");

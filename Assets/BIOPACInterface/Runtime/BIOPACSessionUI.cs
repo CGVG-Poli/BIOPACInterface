@@ -11,7 +11,15 @@ public class BIOPACSessionUI : Singleton<BIOPACSessionUI>
     [SerializeField] private Text _slideshowFolderText;
     [SerializeField] private Button _selectSlideshowFolder;
     [SerializeField] private Button _openSlideshowFolder;
-    [SerializeField] private Text _sessionStatus;
+    //[SerializeField] private Text _sessionStatus;
+
+    [SerializeField] private Text _analysisName;
+    [SerializeField] private Text _respondentName;
+    [SerializeField] private Text _recordingStart;
+    [SerializeField] private Text _slideshowStart;
+    [SerializeField] private Text _slideshowStop;
+    [SerializeField] private Text _clientName;
+    [SerializeField] private Text _clientDesync;
 
     private bool _fileBrowserOpen = false;
     
@@ -19,8 +27,6 @@ public class BIOPACSessionUI : Singleton<BIOPACSessionUI>
         {
             _slideshowFolderText.text = value;
         } }
-
-    public Text SessionStatus => _sessionStatus;
 
     void Start()
     {
@@ -49,5 +55,16 @@ public class BIOPACSessionUI : Singleton<BIOPACSessionUI>
         GameObject eventSystem = FindObjectOfType<FileBrowser>().GetComponentInChildren<EventSystem>()?.gameObject;
         if(eventSystem != null)
             Destroy(eventSystem);
+    }
+
+    public void SetSessionInfos(BIOPACSession session)
+    {
+        _analysisName.text = session.AnalysisName;
+        _respondentName.text = session.RespondentName;
+        _recordingStart.text = session.RecordingSessionStart.ToString("yyyy/M/d HH:mm:ss.fff");
+        _slideshowStart.text = session.SlideshowStart.ToString("yyyy/M/d HH:mm:ss.fff");
+        _slideshowStop.text = session.SlideshowEnd.ToString("yyyy/M/d HH:mm:ss.fff");
+        _clientName.text = session.ConnectedClient;
+        _clientDesync.text = session.ConnectedClientClockDesync.ToString();
     }
 }
