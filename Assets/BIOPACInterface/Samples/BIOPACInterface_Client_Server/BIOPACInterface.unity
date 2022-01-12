@@ -401,6 +401,10 @@ PrefabInstance:
       propertyPath: m_AnchoredPosition.y
       value: 0.000005722046
       objectReference: {fileID: 0}
+    - target: {fileID: 7156243376396342052, guid: 68e00327bb88d3842aa14a43eff951f2, type: 3}
+      propertyPath: m_Interactable
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 68e00327bb88d3842aa14a43eff951f2, type: 3}
 --- !u!224 &101072478 stripped
@@ -2820,13 +2824,13 @@ MonoBehaviour:
   _slideshowFolderText: {fileID: 179375382}
   _selectSlideshowFolder: {fileID: 769084180}
   _openSlideshowFolder: {fileID: 775991672}
-  _analysisName: {fileID: 0}
-  _respondentName: {fileID: 0}
-  _recordingStart: {fileID: 0}
-  _slideshowStart: {fileID: 0}
-  _slideshowStop: {fileID: 0}
-  _clientName: {fileID: 0}
-  _clientDesync: {fileID: 0}
+  _analysisName: {fileID: 309666442}
+  _respondentName: {fileID: 1672677988}
+  _recordingStart: {fileID: 556153038}
+  _slideshowStart: {fileID: 1831824437}
+  _slideshowStop: {fileID: 1615549215}
+  _clientName: {fileID: 1567279387}
+  _clientDesync: {fileID: 1490970917}
 --- !u!114 &975051606
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3091,6 +3095,10 @@ PrefabInstance:
     - target: {fileID: 132536, guid: 67117722a812a2e46ab8cb8eafbf5f5e, type: 3}
       propertyPath: m_Name
       value: IngameDebugConsole
+      objectReference: {fileID: 0}
+    - target: {fileID: 11400672, guid: 67117722a812a2e46ab8cb8eafbf5f5e, type: 3}
+      propertyPath: m_Color.a
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 11418932, guid: 67117722a812a2e46ab8cb8eafbf5f5e, type: 3}
       propertyPath: m_Enabled
