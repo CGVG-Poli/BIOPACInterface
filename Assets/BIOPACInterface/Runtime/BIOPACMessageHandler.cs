@@ -7,6 +7,7 @@ using System.IO;
 using System.Threading;
 using UnityEngine.UI;
 using System.Globalization;
+using Utils;
 
 //Example of Slideshow start
 // 07042905;AttentionTool;SlideshowStart;0;-1;20211124112050433;Francesco_POLI;MALE;32;BIOPACInterface_v2;{"usingBlocks":false,"predefinedStudy":false,"stimuli":[{"id":1000,"file":"C:\\ProgramData\\iMotions\\Lab_NG\\Data\\BIOPACInterface_v2\\Stimuli\\VAS (4).png","type":"Image","format":"none","exposureTimeMs":300000.0,"name":"VAS (4)","locked":false}]}
@@ -62,26 +63,39 @@ public class Slideshow
 public class BIOPACMessageHandler : Singleton<BIOPACMessageHandler>
 {
 
-    //DEBUG
-    public Text messageReceived;
-    public Text messageToProcess;
-
     public event Action<Slideshow> SlideshowStarted;
     public event Action<Slideshow> SlideshowStopped;
-    
-    private string _outputDumpFilePath = "C:\\Users\\puniTO\\BIOPAC\\BIOPACOutputs\\biopacOutputDump.txt";
-    private string _outputSlideShowFilePath;
-    private string _debugOutputFilePath = "C:\\Users\\puniTO\\BIOPAC\\BIOPACOutputs\\debugOutput.txt";
 
-    //private Queue<string> _receivedMessages;
+    private string _outputDumpFilePath;
+    private string _outputSlideShowFilePath;
+    
+    //private string _debugOutputFilePath = "C:\\Users\\puniTO\\BIOPAC\\BIOPACOutputs\\debugOutput.txt"; //DEBUG PURPOSES
+
     private BlockingCollection<string> _receivedMessages;
     private Slideshow _currentSlideshow;
 
     private int _messagesReceived = 0;
+
+    public int MessagesInQueue => _receivedMessages.Count;
+
     private void Start()
     {
-        //File.WriteAllText(_outputDumpFilePath, "Starting a new BIOPAC Connection\n", System.Text.Encoding.UTF8);
-        //File.WriteAllText(_debugOutputFilePath, "Starting a new BIOPAC Connection\n", System.Text.Encoding.UTF8);
+        _outputDumpFilePath = Configuration.GetString("BIOPACMessagesDumpFile", "");
+        if (!String.IsNullOrEmpty(_outputDumpFilePath))
+        {
+            try
+            {
+                string fileDirectory = Path.GetDirectoryName(_outputDumpFilePath);
+                if (!Directory.Exists(fileDirectory))
+                    Directory.CreateDirectory(fileDirectory);
+            }
+            catch(Exception e)
+            {
+                Debug.LogError(e);
+            }
+            
+        }
+
 
         BIOPACClient.Instance.ConnectionStatusChange += OnBIOPACConnectionStatusChange;
         
@@ -108,16 +122,11 @@ public class BIOPACMessageHandler : Singleton<BIOPACMessageHandler>
         }
     }
 
-    private void Update()
-    {
-                 
-    }
-
-    private void OnGUI()
-    {
-        GUI.Label(new Rect(Screen.width - 150, 15, 150, 20), "RECEIVED:" + _messagesReceived.ToString());
-        GUI.Label(new Rect(Screen.width - 150, 15 + 20, 150, 20), "TO PROCESS:" + _receivedMessages?.Count.ToString());
-    }
+    //private void OnGUI()
+    //{
+    //    GUI.Label(new Rect(Screen.width - 150, 15, 150, 20), "RECEIVED:" + _messagesReceived.ToString());
+    //    GUI.Label(new Rect(Screen.width - 150, 15 + 20, 150, 20), "TO PROCESS:" + _receivedMessages?.Count.ToString());
+    //}
 
     private void ProcessIncomingMessages()
     {
@@ -197,12 +206,11 @@ public class BIOPACMessageHandler : Singleton<BIOPACMessageHandler>
     public void MessageReceived(string msg)
     {
         string[] messageEntries = msg.Split('\n');
-        _messagesReceived += messageEntries.Length;
         for(int i = 0; i < messageEntries.Length; i++)
             _receivedMessages.Add(messageEntries[i]);
 
-
-        File.AppendAllText(_outputDumpFilePath, msg);
+        if (!String.IsNullOrEmpty(_outputDumpFilePath))
+            File.AppendAllText(_outputDumpFilePath, msg);
     }
     
     

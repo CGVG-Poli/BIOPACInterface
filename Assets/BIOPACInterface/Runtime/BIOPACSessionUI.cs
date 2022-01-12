@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
+using System.Text;
 using SimpleFileBrowser;
 using UnityEngine;
 using UnityEngine.EventSystems;
@@ -13,6 +14,8 @@ public class BIOPACSessionUI : Singleton<BIOPACSessionUI>
     [SerializeField] private Button _openSlideshowFolder;
     //[SerializeField] private Text _sessionStatus;
 
+    [SerializeField] private Text _messagesQueue;
+
     [SerializeField] private Text _analysisName;
     [SerializeField] private Text _respondentName;
     [SerializeField] private Text _recordingStart;
@@ -22,6 +25,8 @@ public class BIOPACSessionUI : Singleton<BIOPACSessionUI>
     [SerializeField] private Text _clientDesync;
 
     private bool _fileBrowserOpen = false;
+
+    private StringBuilder messagesQueueSb = new StringBuilder();
     
     public string SlideshowOutputFolder { set
         {
@@ -46,6 +51,11 @@ public class BIOPACSessionUI : Singleton<BIOPACSessionUI>
         _clientName.text = "Not Started";
         _clientDesync.text = "Not Started";
 
+    }
+
+    private void Update()
+    {
+        SetMessagesQueueNumber(BIOPACMessageHandler.Instance.MessagesInQueue);
     }
 
     private IEnumerator OpenFileBrowser()
@@ -74,5 +84,12 @@ public class BIOPACSessionUI : Singleton<BIOPACSessionUI>
         _slideshowStop.text = session.IsSlideshowCompleted() ? session.SlideshowEnd.ToString("yyyy/M/d HH:mm:ss.fff") : "Ongoing...";
         _clientName.text = session.ConnectedClient;
         _clientDesync.text = session.ConnectedClientClockDesync.ToString();
+    }
+
+    public void SetMessagesQueueNumber(int n)
+    {
+        messagesQueueSb.Clear();
+        messagesQueueSb.Append("Messages in Queue: ").Append(n);
+        _messagesQueue.text = messagesQueueSb.ToString();
     }
 }

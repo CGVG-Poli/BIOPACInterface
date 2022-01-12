@@ -162,6 +162,9 @@ namespace Utils
             foreach (FileInfo file in files)
             {
                 string tempPath = Path.Combine(destDirName, file.Name);
+                if (File.Exists(tempPath))
+                    File.Delete(tempPath);
+
                 file.CopyTo(tempPath, false);
             }
 

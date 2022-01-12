@@ -3,3 +3,4 @@ BIOPACClientIP=127.0.0.1
 SyncCycles=10
 CyclesDelay=0.05
 BIOPACInterfacePORT=5000
+#BIOPACMessagesDumpFile=C:\\Users\\puniTO\\BIOPAC\\BIOPACOutputs\\debugOutput.txt
