@@ -21,7 +21,6 @@ public class BIOPACInterfaceServer : Singleton<BIOPACInterfaceServer>, INetEvent
     private NetManager _netServer;
     private Dictionary<string, NetPeer> _peers;
     private NetDataWriter _dataWriter;
-    private BIOPACInterfaceMessageHandler _messageHandler;
     private NetPacketProcessor _netPacketProcessor;
 
     public Dictionary<string, NetPeer> Peers => _peers;
@@ -37,7 +36,6 @@ public class BIOPACInterfaceServer : Singleton<BIOPACInterfaceServer>, INetEvent
     void Start()
     {
         _peers = new Dictionary<string, NetPeer>();
-        _messageHandler = BIOPACInterfaceMessageHandler.Instance;
     }
 
     // Update is called once per frame

@@ -9,18 +9,13 @@ using UnityEngine;
 
 public class BIOPACInterfaceClient : Singleton<BIOPACInterfaceClient>, INetEventListener
 {
+    public event Action<NetPeer> ConnectedToServer; 
+    public event Action<NetPeer> DisconnectedFromServer; 
     public event Action<ClientServerSyncMessage, bool> ReceivedClientServerSyncMessage; 
 
     private NetManager _netClient;
     private NetPeer _serverPeer;
-    private BIOPACInterfaceMessageHandler _messageHandler;
     private NetPacketProcessor _netPacketProcessor;
-
-    
-    void Start()
-    {
-        _messageHandler = BIOPACInterfaceMessageHandler.Instance;
-    }
 
     // Update is called once per frame
     void Update()
@@ -52,7 +47,7 @@ public class BIOPACInterfaceClient : Singleton<BIOPACInterfaceClient>, INetEvent
         _netClient.UnconnectedMessagesEnabled = true;
         _netClient.UpdateTime = 15;
         //TODO REMOVE LINE 
-        _netClient.DisconnectTimeout = Int32.MaxValue;
+        //_netClient.DisconnectTimeout = Int32.MaxValue;
         _netClient.Start();
         SubscribeToMessages();
         Debug.Log("Starting BIOPACInterface Client");
@@ -61,6 +56,7 @@ public class BIOPACInterfaceClient : Singleton<BIOPACInterfaceClient>, INetEvent
     public void StopClient()
     {
         _netClient?.Stop();
+        _netClient = null;
         Debug.Log("Stopped BIOPACInterface Client");
 
     }
@@ -82,11 +78,15 @@ public class BIOPACInterfaceClient : Singleton<BIOPACInterfaceClient>, INetEvent
         message.ClientDeviceName = SystemInfo.deviceName;
         message.ClientUniqueIdentifier = SystemInfo.deviceUniqueIdentifier;
         SendMessageToServer<ClientInformationMessage>(message);
+        
+        ConnectedToServer?.Invoke(peer);
     }
 
     public void OnPeerDisconnected(NetPeer peer, DisconnectInfo disconnectInfo)
     {
         Debug.Log("[CLIENT] We disconnected because " + disconnectInfo.Reason);
+        
+        DisconnectedFromServer?.Invoke(peer);
     }
 
     public void OnNetworkError(IPEndPoint endPoint, SocketError socketError)
