@@ -119,6 +119,8 @@ public class BIOPACClient : Singleton<BIOPACClient>
             int byteLength = stream.EndRead(res);
             if (byteLength > 0)
             {
+                ThreadManager.Instance.ExecuteOnMainThread(() => ConnectionStatus = Status.Receving);
+
                 byte[] incomingData = new byte[byteLength];
                 Array.Copy(_receivedBytes, incomingData, byteLength);
 
@@ -129,7 +131,7 @@ public class BIOPACClient : Singleton<BIOPACClient>
             }
             else {
                 Debug.Log($"Received 0 bytes from server");
-                //Disconnect();
+                ThreadManager.Instance.ExecuteOnMainThread(() => ConnectionStatus = Status.Connected);
                 return;
             }
             

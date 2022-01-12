@@ -36,7 +36,7 @@ public class BIOPACClientUI : Singleton<BIOPACClientUI>
         SetConnectionStatus(status);
     }
 
-    private void SetConnectionStatus(BIOPACClient.Status status)
+    public void SetConnectionStatus(BIOPACClient.Status status)
     {
         switch (status)
         {
@@ -55,13 +55,13 @@ public class BIOPACClientUI : Singleton<BIOPACClientUI>
             case BIOPACClient.Status.Connected:
                 _connectionStatusImg.color = Color.green;
                 _messagesStatusImg.color = Color.red;
-                _connectionStatusMessage.text = "CONNECTION: " + status.ToString();
+                _connectionStatusMessage.text = "CONNECTION: " + "Connected";
                 _messagesStatusMessage.text = "MESSAGES: " + "Not Receiving";
                 break;
             case BIOPACClient.Status.Receving:
                 _connectionStatusImg.color = Color.green;
                 _messagesStatusImg.color = Color.green;
-                _connectionStatusMessage.text = "CONNECTION: " + status.ToString();
+                _connectionStatusMessage.text = "CONNECTION: " + "Connected";
                 _messagesStatusMessage.text = "MESSAGES: " + "Receiving";
                 break;
             default:
@@ -71,7 +71,7 @@ public class BIOPACClientUI : Singleton<BIOPACClientUI>
 
     private void SetButtonsState(BIOPACClient.Status status)
     {
-        _disconnectBtn.interactable = status == BIOPACClient.Status.Connected;
+        _disconnectBtn.interactable = (status == BIOPACClient.Status.Connected) || (status == BIOPACClient.Status.Receving);
         _connectBtn.interactable = status == BIOPACClient.Status.Disconnected;
         
     }

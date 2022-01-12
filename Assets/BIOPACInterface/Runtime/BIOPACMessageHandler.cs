@@ -200,7 +200,8 @@ public class BIOPACMessageHandler : Singleton<BIOPACMessageHandler>
         _messagesReceived += messageEntries.Length;
         for(int i = 0; i < messageEntries.Length; i++)
             _receivedMessages.Add(messageEntries[i]);
-        
+
+
         File.AppendAllText(_outputDumpFilePath, msg);
     }
     
