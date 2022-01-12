@@ -18,7 +18,7 @@ namespace Utils
 #if UNITY_EDITOR
             new FileInfo(Path.Combine(Path.Combine(Application.dataPath, "BIOPACInterface/BuildData"), "config.txt"));
 #elif !UNITY_EDITOR
-            new FileInfo(Path.Combine(Path.Combine(Application.dataPath, "BuildData"), "config.txt"));
+            new FileInfo(Path.Combine(Path.Combine(Directory.GetParent(Application.dataPath).FullName, "BuildData"), "config.txt"));
 #endif
         static Configuration()
         {

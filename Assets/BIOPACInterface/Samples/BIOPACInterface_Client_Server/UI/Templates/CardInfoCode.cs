@@ -65,9 +65,10 @@ public class CardInfoCode : VisualElement
             var ate = ve as CardInfoCode;
             
             ate.Clear();
-            
+#if UNITY_EDITOR //Temporarly added for making builds must check how to use this script correctly
             VisualTreeAsset template = AssetDatabase.LoadAssetAtPath<VisualTreeAsset>("Assets/BIOPACInterface/Samples/BIOPACInterface_Client_Server/UI/Templates/CardInfo.uxml"); 
             template.CloneTree(ate);
+#endif
             ate.Init();
             
             ate.Title = m_Title.GetValueFromBag(bag, cc);
