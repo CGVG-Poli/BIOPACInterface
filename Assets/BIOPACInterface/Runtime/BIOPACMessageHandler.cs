@@ -28,12 +28,13 @@ public class Slideshow
         string[] messageParts = biopacMessage.Split(';');
         try
         {
-            Start = DateTime.ParseExact(messageParts[5], "yyyyMMddhhmmssfff", CultureInfo.InvariantCulture);
+            string newTime = String.Copy(messageParts[5]).Trim();
+            Start = DateTime.ParseExact(newTime, "yyyyMMddHHmmssfff", CultureInfo.InvariantCulture);
         }
         catch(Exception e)
         {
             Start = DateTime.MinValue;
-            ThreadManager.Instance.ExecuteOnMainThread( () => Debug.Log(e.Message)); 
+            ThreadManager.Instance.ExecuteOnMainThread( () => Debug.Log(e.Message));
         }
 
         RespondentName = messageParts[6];
@@ -46,7 +47,8 @@ public class Slideshow
         string[] messageParts = message.Split(';');
         try
         {
-            End = DateTime.ParseExact(messageParts[5], "yyyyMMddhhmmssfff", CultureInfo.InvariantCulture);
+            string newTime = String.Copy(messageParts[5]).Trim();
+            End = DateTime.ParseExact(newTime, "yyyyMMddHHmmssfff", CultureInfo.InvariantCulture);
         }
         catch (Exception e)
         {
