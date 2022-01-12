@@ -1,6 +1,6 @@
 {
   "name": "com.fs.biopac-interface",
-  "version": "1.0.1",
+  "version": "1.0.3",
   "displayName": "BIOPAC Interface",
   "description": "This package enables the communication and logging of data from the BIOPAC instrument into a Unity application",
   "unity": "2020.3",
