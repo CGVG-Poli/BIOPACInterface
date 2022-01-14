@@ -23,7 +23,7 @@ public class FileManager : Singleton<FileManager>
         base.Awake();
         string lastSavedSlideshowOutputFolder = PlayerPrefs.GetString("LastSlideshowOutputFolder");
         if (string.IsNullOrEmpty(lastSavedSlideshowOutputFolder))
-            SlideshowsOutputFolder = Path.Combine(Application.dataPath, "SlideshowsOutput");
+            SlideshowsOutputFolder = Path.Combine(Application.dataPath,"SlideshowsOutput");
         else
             SlideshowsOutputFolder = lastSavedSlideshowOutputFolder;
 

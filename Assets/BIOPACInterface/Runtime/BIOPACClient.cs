@@ -59,13 +59,6 @@ public class BIOPACClient : Singleton<BIOPACClient>
         _connectionStatus = Status.Disconnected;
     }
 
-    // Update is called once per frame
-    void Update()
-    {
-        if (Input.GetKeyDown(KeyCode.C))
-            ConnectionStatus = Status.Connected;
-    }
-
     public void Connect()
     {
         ConnectionStatus = Status.Connecting;
